@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I study course</title>
+<meta name="description" content="A free, self-paced study course for the Professional Scrum Master I exam, based on the 2020 Scrum Guide.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<script>
+/* Applied before first paint so there is no flash of the wrong theme */
+window.PSM_ACCENTS = {
+  sage:     { name:"Sage",     light:["#5E8F7E","#3F6E5E","#E7F0EC"], dark:["#86B5A4","#A6CEBF","#22312C"] },
+  sky:      { name:"Sky",      light:["#5F86AE","#3E6690","#E6EEF6"], dark:["#8EB0D3","#B3CCE6","#1F2A36"] },
+  sand:     { name:"Sand",     light:["#A68352","#7D6036","#F4EDE2"], dark:["#CDAA78","#E0C69F","#2E2920"] },
+  lavender: { name:"Lavender", light:["#8A7BB0","#655790","#EFEBF6"], dark:["#B2A6D6","#CCC3E8","#2A2636"] }
+};
+window.applyTheme = function(theme){
+  theme = theme || {};
+  var mode = theme.mode || "system";
+  var dark = mode === "dark" || (mode === "system" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+  var root = document.documentElement;
+  root.setAttribute("data-mode", dark ? "dark" : "light");
+  var a = (PSM_ACCENTS[theme.accent] || PSM_ACCENTS.sage)[dark ? "dark" : "light"];
+  root.style.setProperty("--sage", a[0]); root.style.setProperty("--sage-deep", a[1]); root.style.setProperty("--mist", a[2]);
+};
+try { applyTheme((JSON.parse(localStorage.getItem("psm1-course:v1") || "{}")).theme); } catch(e) { applyTheme(); }
+</script>
+<style>
+:root{
+  --paper:#F5F7F6; --surface:#FFFFFF; --ink:#27302E; --muted:#66726F; --faint:#8C9794;
+  --line:#DFE5E2; --sage:#5E8F7E; --sage-deep:#3F6E5E; --mist:#E7F0EC;
+  --sky:#8AA4BF; --sky-mist:#EAF0F6; --amber:#B08A4A; --amber-mist:#F6EFE3;
+  --rose:#B0646A; --rose-mist:#F6E9EA;
+  --ui:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --read:"Literata", Georgia, "Times New Roman", serif;
+  --r-s:6px; --r-m:10px;
+  color-scheme: light;
+}
+:root[data-mode="dark"]{
+  --paper:#161B1A; --surface:#1D2322; --ink:#E2E8E6; --muted:#A1ACA9; --faint:#7D8986;
+  --line:#2E3836; --sky:#8EA9C6; --sky-mist:#1F2833; --amber:#D2AE6E; --amber-mist:#2E2A21;
+  --rose:#D58C92; --rose-mist:#33242A;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:16px}
+body{margin:0;transition:background-color .3s ease,color .3s ease;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--sage-deep);text-underline-offset:3px}
+a:hover{color:var(--sage)}
+:focus-visible{outline:2px solid var(--sage);outline-offset:2px;border-radius:4px}
+button{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--ui);line-height:1.2;margin:0}
+h1{font-size:clamp(1.7rem,3.2vw,2.25rem);font-weight:600;letter-spacing:-0.015em}
+h2{font-size:1.25rem;font-weight:600;letter-spacing:-0.01em}
+h3{font-size:1rem;font-weight:600}
+.muted{color:var(--muted)}
+
+/* layout */
+.shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100vh}
+.side{border-right:1px solid var(--line);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;padding:24px 18px 32px}
+.main{padding:40px clamp(18px,5vw,64px) 80px;max-width:860px;width:100%}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px;text-decoration:none;color:var(--ink)}
+.brand-mark{min-width:30px;padding:0 7px;height:30px;border-radius:8px;background:var(--mist);display:grid;place-items:center;color:var(--sage-deep);font-weight:700;font-size:.85rem}
+.brand-name{font-weight:600}
+.overall{margin:0 0 20px}
+.overall-row{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:6px}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar > span{display:block;height:100%;background:var(--sage);border-radius:99px;transition:width .4s ease}
+.nav-top{display:flex;flex-direction:column;gap:2px;margin-bottom:18px}
+.nav-link{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-s);text-decoration:none;color:var(--ink);font-size:.95rem}
+.nav-link:hover{background:var(--paper);color:var(--ink)}
+.nav-link[aria-current="page"]{background:var(--mist);color:var(--sage-deep);font-weight:600}
+.mod{margin:14px 0 4px;padding:0 10px;font-size:.8rem;color:var(--faint);font-weight:600}
+.lesson-link{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;padding:6px 10px;border-radius:var(--r-s);text-decoration:none;color:var(--muted);font-size:.9rem;line-height:1.35}
+.lesson-link:hover{background:var(--paper);color:var(--ink)}
+.lesson-link[aria-current="page"]{background:var(--mist);color:var(--ink)}
+.tick{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);margin-top:1px;display:grid;place-items:center}
+.lesson-link.done .tick{background:var(--sage);border-color:var(--sage)}
+.lesson-link.done .tick::after{content:"";width:7px;height:4px;border-left:1.6px solid var(--surface);border-bottom:1.6px solid var(--surface);transform:rotate(-45deg) translate(1px,-1px)}
+.side .outline-toggle{display:none}
+
+/* blocks */
+.lede{color:var(--muted);margin:10px 0 28px;max-width:60ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:22px 24px;margin-bottom:20px}
+.panel h2{margin-bottom:4px}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:end}
+.field{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted)}
+.field input{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:8px 10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:var(--r-s);cursor:pointer;font-weight:500;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--sage);color:var(--ink)}
+.btn.primary{background:var(--mist);border-color:transparent;color:var(--sage-deep);font-weight:600}
+.btn.primary:hover{border-color:var(--sage)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--muted);padding-inline:8px}
+.btn.quiet:hover{color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* today */
+.today-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.target{font-size:2.6rem;font-weight:600;letter-spacing:-0.02em;line-height:1;color:var(--sage-deep)}
+.target small{font-size:1rem;font-weight:500;color:var(--muted);margin-left:6px;letter-spacing:0}
+.today-list{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:8px}
+.today-list li a{display:grid;grid-template-columns:18px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-s);text-decoration:none;color:var(--ink)}
+.today-list li a:hover{border-color:var(--sage)}
+.today-list li.done a{color:var(--muted)}
+.today-list li.done .tick{background:var(--sage);border-color:var(--sage)}
+.today-list li.done .tick::after{content:"";width:7px;height:4px;border-left:1.6px solid var(--surface);border-bottom:1.6px solid var(--surface);transform:rotate(-45deg) translate(1px,-1px)}
+.mins{font-size:.85rem;color:var(--faint)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:16px 18px}
+.stat b{display:block;font-size:1.7rem;font-weight:600;letter-spacing:-0.02em;line-height:1.1}
+.stat > span{font-size:.85rem;color:var(--muted)}
+.chart-wrap{margin-top:14px;overflow-x:auto}
+.chart-wrap svg{display:block;width:100%;min-width:480px;height:auto}
+.legend{display:flex;gap:18px;font-size:.85rem;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:2px;vertical-align:middle;margin-right:6px}
+.notice{background:var(--amber-mist);border-radius:var(--r-s);padding:10px 14px;font-size:.92rem;margin-top:14px}
+
+/* lesson */
+.crumb{font-size:.88rem;color:var(--muted);margin-bottom:10px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 30px}
+.chip{font-size:.8rem;padding:3px 10px;border-radius:99px;background:var(--sky-mist);color:var(--ink)}
+.chip.ok{background:var(--mist);color:var(--sage-deep)}
+.reading{font-family:var(--read);font-size:1.08rem;line-height:1.75;max-width:68ch}
+.reading p{margin:0 0 1.05em}
+.reading ul{padding-left:1.2em;margin:0 0 1.05em}
+.reading li{margin-bottom:.35em}
+.reading strong{font-weight:600}
+.cta-line{font-family:var(--ui);font-size:1rem}
+.table-wrap{overflow-x:auto;margin:0 0 1.2em}
+table{border-collapse:collapse;width:100%;font-family:var(--ui);font-size:.95rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted)}
+.aside{border-left:3px solid var(--sage);background:var(--surface);padding:16px 20px;border-radius:0 var(--r-s) var(--r-s) 0;margin:26px 0;max-width:68ch}
+.aside.trap{border-left-color:var(--amber)}
+.aside h3{margin-bottom:8px}
+.aside ul{margin:0;padding-left:1.1em}
+.aside li{margin-bottom:4px}
+
+/* questions */
+.qs{margin-top:34px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:18px 20px;margin-bottom:14px}
+.q p.stem{margin:0 0 12px;font-weight:500}
+.hint{font-size:.85rem;color:var(--muted);margin:-6px 0 10px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:var(--r-s);border:1px solid transparent;cursor:pointer}
+.opt:hover{background:var(--paper)}
+.opt input{margin-top:4px;accent-color:var(--sage)}
+.opt.right{background:var(--mist);border-color:var(--sage)}
+.opt.wrong{background:var(--rose-mist);border-color:var(--rose)}
+.explain{margin-top:10px;font-size:.93rem;padding:10px 12px;border-radius:var(--r-s);background:var(--paper)}
+.explain b.good{color:var(--sage-deep)} .explain b.bad{color:var(--rose)}
+.lesson-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+
+/* practice */
+.choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.exam-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.clock{font-variant-numeric:tabular-nums;font-weight:600;font-size:1.2rem}
+.clock.low{color:var(--rose)}
+.grid-nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.grid-nav button{width:34px;height:34px;border-radius:var(--r-s);border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.8rem}
+.grid-nav button.answered{background:var(--mist);border-color:transparent}
+.grid-nav button.flag{border-color:var(--amber);box-shadow:inset 0 -3px 0 var(--amber)}
+.grid-nav button.cur{border-color:var(--ink)}
+.score{font-size:3rem;font-weight:600;letter-spacing:-0.02em;line-height:1}
+.history{list-style:none;padding:0;margin:12px 0 0}
+.history li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.pass{color:var(--sage-deep);font-weight:600}.fail{color:var(--rose);font-weight:600}
+.foot{margin-top:56px;font-size:.82rem;color:var(--faint);max-width:68ch}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--r-s);font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+
+@media (max-width: 860px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  .side .outline-toggle{display:inline-flex;margin-top:4px}
+  .side .outline{display:none}
+  .side.open .outline{display:block}
+  .main{padding-top:28px}
+  .stats{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+
+/* ---------- status, theme, delights ---------- */
+.title-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;padding:4px 11px 4px 9px;border-radius:99px;background:var(--mist);color:var(--sage-deep)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor;position:relative}
+.pill.active .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid currentColor;opacity:0;animation:ping 2.2s ease-out infinite}
+.pill.paused{background:var(--amber-mist);color:var(--amber)}
+.pill.completed{background:var(--mist);color:var(--sage-deep)}
+.pill.cancelled{background:var(--rose-mist);color:var(--rose)}
+@keyframes ping{0%{transform:scale(.6);opacity:.7}80%,100%{transform:scale(1.6);opacity:0}}
+.status-actions{display:flex;gap:8px;flex-wrap:wrap;margin:-14px 0 26px}
+.btn.danger{color:var(--rose)} .btn.danger:hover{border-color:var(--rose)}
+.paused-card{display:flex;gap:16px;align-items:center}
+.paused-card .glyph{font-size:2rem;line-height:1}
+.past{list-style:none;padding:0;margin:10px 0 0}
+.past li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.93rem;flex-wrap:wrap}
+.stat .leaf{display:inline-block;transform-origin:bottom center}
+.stat.streak-on .leaf{animation:sway 3s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+
+.appearance{margin-top:26px;padding-top:16px;border-top:1px solid var(--line)}
+.appearance h3{font-size:.8rem;color:var(--faint);margin:0 0 10px 10px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:3px;gap:3px;margin:0 4px}
+.seg button{border:0;background:transparent;padding:6px 4px;border-radius:4px;cursor:pointer;font-size:.82rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.swatches{display:flex;gap:10px;margin:12px 10px 0}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0;transition:transform .2s ease}
+.swatch:hover{transform:scale(1.12)}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+
+/* view entrance: one orchestrated moment per page */
+.view-enter > *{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.view-enter > *:nth-child(2){animation-delay:.04s}.view-enter > *:nth-child(3){animation-delay:.08s}
+.view-enter > *:nth-child(4){animation-delay:.12s}.view-enter > *:nth-child(5){animation-delay:.16s}
+.view-enter > *:nth-child(n+6){animation-delay:.2s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.chart-wrap .actual.draw{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.2s .25s cubic-bezier(.3,.7,.2,1) forwards}
+.chart-wrap .head.draw{opacity:0;animation:fadein .3s 1.35s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+
+.tick.pop{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.q.shake{animation:shake .4s ease}
+@keyframes shake{20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.opt.right{animation:glow .6s ease}
+@keyframes glow{from{background:var(--surface)}}
+.btn{transition:border-color .2s ease,background-color .2s ease,transform .15s ease}
+.btn:active{transform:scale(.97)}
+.read-progress{position:fixed;top:0;left:0;height:3px;background:var(--sage);width:0;z-index:20;transition:width .1s linear}
+.lesson-link .tick{transition:background-color .25s ease,border-color .25s ease}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+@media (max-width: 860px){ .stats{grid-template-columns:1fr 1fr} }
+@media (prefers-reduced-motion: reduce){
+  .view-enter > *, .chart-wrap .actual.draw, .chart-wrap .head.draw, .tick.pop, .q.shake, .opt.right, .pill .dot::after, .stat .leaf{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}
+}
+
+/* ---------- KPI cards ---------- */
+.stat{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:2px;padding:16px 18px 18px}
+.stat::before{content:"";position:absolute;right:-26px;bottom:-26px;width:70px;height:70px;border-radius:50%;border:1.5px solid var(--sage);opacity:.12}
+.stat b small{font-size:.95rem;font-weight:500;color:var(--faint);margin-left:1px}
+.stat-vis{height:52px;display:flex;align-items:center;margin-bottom:10px}
+.kpi-vis{height:52px;width:auto;max-width:100%}
+.ring.grow{stroke-dashoffset:var(--c);animation:ring 1s .2s cubic-bezier(.3,.7,.2,1) forwards}
+@keyframes ring{to{stroke-dashoffset:var(--o)}}
+.segs{display:grid;gap:2px;width:100%;height:34px;align-items:end}
+.segs i{height:16px;border-radius:2px;background:var(--line);transform-origin:bottom}
+.segs i.past{background:var(--sage);opacity:.45}
+.segs i.now{background:var(--sage);height:34px}
+.segs.grow i{animation:seg .35s var(--d) both}
+@keyframes seg{from{transform:scaleY(.2);opacity:0}}
+.spark.grow{stroke-dasharray:100;stroke-dashoffset:100;animation:draw .9s .2s ease-out forwards}
+.week{display:flex;gap:6px;height:auto;width:100%;justify-content:space-between}
+.week span{display:flex;flex-direction:column;align-items:center;gap:5px}
+.week b{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);display:block}
+.week span.on b{background:var(--sage);border-color:var(--sage)}
+.week span.today b{box-shadow:0 0 0 3px var(--mist)}
+.week em{font-style:normal;font-size:.7rem;color:var(--faint)}
+.week.grow span.on b{animation:pop .45s var(--d) cubic-bezier(.3,1.6,.5,1) both}
+
+/* ---------- geometric backdrop ---------- */
+.main{position:relative}
+.main > *{position:relative;z-index:1}
+.main > .geo{position:absolute;z-index:0;top:4px;right:clamp(8px,3vw,40px);width:min(300px,50%);height:auto;pointer-events:none}
+.geo .g1{animation:float 14s ease-in-out infinite}
+.geo .g2{transform-origin:210px 84px;animation:spin 60s linear infinite}
+.geo .g4{animation:float 10s ease-in-out infinite reverse}
+@keyframes float{50%{transform:translateY(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.panel{position:relative;overflow:hidden}
+.panel.today::after{content:"";position:absolute;top:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--mist) 0 55%,transparent 56%);opacity:.7;pointer-events:none}
+.panel.today > *{position:relative;z-index:1}
+.brand-mark{padding:0;width:32px;min-width:32px;height:32px}
+@media (max-width: 860px){ .main > .geo{width:180px;opacity:.7} }
+@media (prefers-reduced-motion: reduce){ .geo *, .ring.grow, .segs.grow i, .spark.grow, .week.grow span.on b{animation:none!important;stroke-dashoffset:var(--o)} .spark.grow{stroke-dashoffset:0!important} }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="side" aria-label="Course">
+    <a class="brand" href="#plan"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 30 30" width="30" height="30"><circle cx="15" cy="15" r="8" fill="none" stroke="var(--sage)" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="40 50.3" transform="rotate(-60 15 15)"/><path d="M19.6 7.6 l3.4 0.6 -1.6 3.1" fill="none" stroke="var(--sage)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="15" cy="15" r="2.6" fill="var(--sage-deep)"/></svg></span><span class="brand-name">PSM I study course</span></a>
+    <div class="overall" id="overall"></div>
+    <div class="nav-top" id="navtop"></div>
+    <button class="btn quiet outline-toggle" id="outlineToggle" aria-controls="outline">Show lessons</button>
+    <div class="outline" id="outline"></div>
+    <div class="appearance" id="appearance"></div>
+  </nav>
+  <main class="main" id="view"></main>
+</div>
+<div class="read-progress" id="readProgress" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const COURSE = [
+{
+  id: "m0", title: "Start here", area: "Orientation",
+  lessons: [
+    { id: "g1", title: "First read of the Scrum Guide", min: 25,
+      body: `<p>Everything on the PSM I exam comes back to one short document: the 2020 Scrum Guide by Ken Schwaber and Jeff Sutherland. It runs to about 13 pages. This course explains it, but it does not replace it.</p>
+<p>For this first pass, read the Guide from start to finish in one sitting without taking notes. You’re aiming for the overall shape: who is accountable for what, which events exist, and how the three artifacts relate to each other. The lessons that follow go through each part in detail.</p>
+<p>As you read, watch for the Guide’s exact wording. Words such as <em>must</em>, <em>should</em>, <em>accountable</em> and <em>optional</em> carry real weight on the exam.</p>
+<p class="cta-line"><a href="https://scrumguides.org/scrum-guide.html" target="_blank" rel="noopener">Open the Scrum Guide (scrumguides.org)</a></p>`,
+      keys: ["The 2020 Scrum Guide is the only official source the exam is based on.", "Read it in one sitting for the overall shape; detail comes later."],
+      traps: ["Blog posts and courses (this one included) can be wrong. When a source disagrees with the Guide, the Guide wins."],
+      qs: [] }
+  ]
+},
+{
+  id: "m1", title: "Foundations", area: "Understanding and applying the Scrum framework",
+  lessons: [
+    { id: "l1", title: "What Scrum is, and what it isn’t", min: 12,
+      body: `<p>Scrum is a <strong>lightweight framework</strong> that helps people, teams and organisations create value through adaptive solutions to complex problems. Complex here means that more is unknown than known: you can’t plan everything up front, so you learn as you go.</p>
+<p>The basic loop is simple. The Product Owner orders the work for a complex problem into a Product Backlog. The Scrum Team turns a selection of that work into an Increment of value during a Sprint. The team and its stakeholders inspect the results and adjust for the next Sprint. Then the loop repeats.</p>
+<p>The Guide is <strong>purposefully incomplete</strong>. It defines only the parts needed to put Scrum theory into practice. Teams fill in the rest with their own practices, techniques and tools. That’s why user stories, story points, velocity and burndown charts appear nowhere in the Guide: they are optional complementary practices.</p>
+<p>The framework itself is fixed. You can use parts of Scrum, but if you leave out or change a core element, what you’re doing is no longer Scrum.</p>`,
+      keys: ["A framework, not a methodology or a process.", "Built for complex work, where you learn by doing.", "Deliberately incomplete: you add your own practices.", "Changing or skipping core elements means you’re not doing Scrum."],
+      traps: ["Answers that call Scrum a “methodology” or a “process” are usually wrong.", "User stories, story points and velocity are not part of Scrum. They are optional practices."],
+      qs: [
+        { q: "Which statement best describes Scrum?", o: ["A methodology that prescribes every practice a team must use", "A lightweight framework that helps people generate value through adaptive solutions for complex problems", "A project management technique for predictable, repeatable work", "A set of engineering practices for software teams"], a: [1], x: "Scrum is a lightweight, purposefully incomplete framework aimed at complex problems." },
+        { q: "A team keeps every Scrum element except the Sprint Retrospective, which it skips. Is the team still doing Scrum?", o: ["True", "False"], a: [1], x: "Scrum’s elements are immutable. Using only some of them can be useful, but the result is not Scrum." }
+      ] },
+    { id: "l2", title: "Empiricism and lean thinking", min: 12,
+      body: `<p>Scrum rests on two ideas. <strong>Empiricism</strong> says knowledge comes from experience, and decisions should be based on what is actually observed. <strong>Lean thinking</strong> reduces waste and focuses on what is essential. Scrum uses an iterative, incremental approach to make outcomes more predictable and to control risk.</p>
+<p>Empiricism stands on three pillars:</p>
+<p><strong>Transparency.</strong> The process and the work must be visible both to the people doing the work and to the people receiving it. Decisions are based on the perceived state of the artifacts, so low transparency leads to decisions that reduce value and increase risk. Transparency is what makes inspection possible.</p>
+<p><strong>Inspection.</strong> Artifacts and progress toward the agreed goals must be inspected frequently and diligently to catch problems early. Scrum’s events give inspection a regular rhythm.</p>
+<p><strong>Adaptation.</strong> If any aspect of the process drifts outside acceptable limits, or the product becomes unacceptable, the process or the materials must be adjusted <strong>as soon as possible</strong>. Adaptation gets harder when the people involved aren’t empowered or self-managing.</p>
+<p>The pillars depend on each other in sequence: inspection without transparency is misleading, and inspection that doesn’t lead to adaptation is pointless.</p>`,
+      keys: ["Empiricism: decide based on what you observe.", "Pillars: transparency, inspection, adaptation.", "Adapt as soon as possible once you’re outside acceptable limits.", "The Sprint holds four formal events for inspection and adaptation."],
+      traps: ["“Adapt at the next Retrospective” is wrong when the question says “as soon as possible”.", "Transparency is a pillar, not a Scrum Value."],
+      qs: [
+        { q: "Which three are the pillars of empiricism? (Choose three.)", o: ["Transparency", "Inspection", "Commitment", "Adaptation", "Planning"], a: [0, 3, 1], x: "Transparency, inspection and adaptation. Commitment is a Scrum Value." },
+        { q: "An inspection shows the process has drifted outside acceptable limits. When should the adjustment be made?", o: ["At the next Sprint Retrospective", "As soon as possible", "At the end of the Sprint", "When the Product Owner approves it"], a: [1], x: "The Guide says adjustments must be made as soon as possible to minimise further deviation." }
+      ] },
+    { id: "l3", title: "The Scrum Values", min: 10,
+      body: `<p>Scrum works best when people live five values: <strong>commitment, focus, openness, respect and courage</strong>.</p>
+<p>The team commits to reaching its goals and to supporting each other. Its main focus is the work of the Sprint, to make the best possible progress toward those goals. The team and its stakeholders are open about the work and its challenges. Team members respect each other as capable, independent people and are respected in turn by the people they work with. They have the courage to do the right thing and to work on hard problems.</p>
+<p>The values guide the team’s work, actions and behaviour. Decisions, steps and the way Scrum is used should reinforce them, not undermine them. When people live these values, the empirical pillars come to life and trust grows.</p>`,
+      keys: ["Commitment, focus, openness, respect, courage.", "The values give direction to work and behaviour.", "Living the values brings the pillars to life and builds trust."],
+      traps: ["Commitment means commitment to goals and to each other, not to a fixed scope.", "Transparency is a pillar, not a value."],
+      qs: [
+        { q: "Which of these is NOT a Scrum Value?", o: ["Courage", "Focus", "Transparency", "Respect"], a: [2], x: "Transparency is a pillar of empiricism. The five values are commitment, focus, openness, respect and courage." },
+        { q: "A developer hides the fact that her work has been blocked for three days. Which Scrum Value does this most clearly go against?", o: ["Openness", "Focus", "Commitment", "Respect"], a: [0], x: "Openness covers being open about the work and its challenges." }
+      ] }
+  ]
+},
+{
+  id: "m2", title: "The Scrum Team", area: "Understanding and applying the Scrum framework",
+  lessons: [
+    { id: "l4", title: "One team, three accountabilities", min: 15,
+      body: `<p>A Scrum Team has one Scrum Master, one Product Owner and Developers. There are no sub-teams and no hierarchies inside it. It is a cohesive unit of professionals focused on one objective at a time: the <strong>Product Goal</strong>.</p>
+<p>The team is <strong>cross-functional</strong>: between them, its members have all the skills needed to create value each Sprint. It is also <strong>self-managing</strong>: the team decides internally who does what, when and how.</p>
+<p>A Scrum Team is small enough to stay nimble and large enough to finish meaningful work in a Sprint, typically 10 people or fewer. When a team grows too large, it should reorganise into several cohesive Scrum Teams focused on the same product. Those teams share the same Product Goal, the same Product Backlog and the same Product Owner.</p>
+<p>The team is responsible for all product-related activities: stakeholder collaboration, verification, maintenance, operation, experimentation, research and development. The <strong>entire Scrum Team</strong> is accountable for creating a valuable, useful Increment every Sprint.</p>
+<p>The 2020 Guide talks about <em>accountabilities</em>, not roles, and drops the idea of a separate “Development Team”. “Developers” means anyone doing the work, whatever their speciality.</p>`,
+      keys: ["One Scrum Master, one Product Owner, Developers. No sub-teams.", "Cross-functional and self-managing.", "Typically 10 people or fewer.", "Several teams on one product share one Product Goal, Product Backlog and Product Owner.", "The whole team is accountable for a valuable Increment every Sprint."],
+      traps: ["“Development Team” is 2017 language. In 2020 they are Developers within one Scrum Team.", "Scrum has no titles such as “tester” or “architect”.", "“10 or fewer” is guidance (“typically”), not a hard limit."],
+      qs: [
+        { q: "Three Scrum Teams work on the same product. How many Product Backlogs should there be?", o: ["One per team", "One", "One per Product Owner", "It depends on how many releases are planned"], a: [1], x: "Teams working on the same product share one Product Backlog, one Product Goal and one Product Owner." },
+        { q: "Who is accountable for creating a valuable, useful Increment every Sprint?", o: ["The Developers", "The Product Owner", "The Scrum Master", "The entire Scrum Team"], a: [3], x: "The Guide makes the entire Scrum Team accountable for this." }
+      ] },
+    { id: "l5", title: "Developers", min: 10,
+      body: `<p>Developers are the people on the Scrum Team who are committed to creating any part of a usable Increment each Sprint. The skills they need vary widely with the product and the domain.</p>
+<p>Developers are always accountable for:</p>
+<ul><li>creating the plan for the Sprint, the Sprint Backlog;</li><li>building quality in by adhering to the Definition of Done;</li><li>adapting their plan each day toward the Sprint Goal;</li><li>holding each other accountable as professionals.</li></ul>
+<p>How the selected work becomes a Done Increment is <strong>up to the Developers alone</strong>. No one, including the Scrum Master or the Product Owner, tells them how to do it. Developers also size Product Backlog items. The Product Owner can influence sizing by helping them understand trade-offs.</p>`,
+      keys: ["Developers own the Sprint Backlog.", "They build quality in through the Definition of Done.", "They decide how the work gets done.", "They size Product Backlog items."],
+      traps: ["A Product Owner or Scrum Master who does Sprint work also acts as a Developer, and that’s allowed.", "Nobody assigns tasks to Developers. They self-manage."],
+      qs: [
+        { q: "Who decides how to turn the selected Product Backlog items into a Done Increment?", o: ["The Scrum Master", "The Product Owner", "The Developers", "The development manager"], a: [2], x: "The how is solely up to the Developers." },
+        { q: "Which two are Developer accountabilities? (Choose two.)", o: ["Creating a plan for the Sprint, the Sprint Backlog", "Building quality in by adhering to the Definition of Done", "Ordering the Product Backlog", "Accepting the Increment on behalf of stakeholders"], a: [0, 1], x: "Ordering the Product Backlog belongs to the Product Owner. Scrum has no acceptance step on behalf of stakeholders." }
+      ] },
+    { id: "l6", title: "Product Owner", min: 15,
+      body: `<p>The Product Owner is accountable for <strong>maximising the value of the product</strong> resulting from the Scrum Team’s work. How this is done varies widely across organisations, teams and individuals.</p>
+<p>The Product Owner is also accountable for effective Product Backlog management, which includes:</p>
+<ul><li>developing the Product Goal and communicating it explicitly;</li><li>creating Product Backlog items and communicating them clearly;</li><li>ordering Product Backlog items;</li><li>making sure the Product Backlog is transparent, visible and understood.</li></ul>
+<p>The Product Owner can do this work personally or delegate it to others, but <strong>remains accountable</strong> either way.</p>
+<p>For the role to work, the whole organisation must respect the Product Owner’s decisions. Those decisions show up in the content and order of the Product Backlog, and in the inspectable Increment at the Sprint Review.</p>
+<p>The Product Owner is <strong>one person, not a committee</strong>, though they may represent many stakeholders’ needs in the Product Backlog. Anyone who wants the Product Backlog changed has to convince the Product Owner. Only the Product Owner can cancel a Sprint.</p>`,
+      keys: ["Accountable for maximising value.", "Accountable for Product Backlog management, even when tasks are delegated.", "One person, not a committee.", "The organisation must respect their decisions.", "The only person who can cancel a Sprint."],
+      traps: ["Delegating Product Backlog work does not move the accountability.", "The Product Owner does not decide how Developers build the work.", "The Product Owner is not required at the Daily Scrum."],
+      qs: [
+        { q: "A senior executive wants a feature moved to the top of the Product Backlog. What should happen?", o: ["The Developers add it, since the executive has authority", "The Scrum Master reorders the backlog", "The executive tries to convince the Product Owner", "The item goes into the current Sprint immediately"], a: [2], x: "Anyone who wants the Product Backlog changed must convince the Product Owner." },
+        { q: "The Product Owner delegates writing Product Backlog items to the Developers. Who is accountable for the Product Backlog?", o: ["The Developers", "The Product Owner", "The Scrum Master", "Shared by everyone"], a: [1], x: "The work can be delegated. The accountability stays with the Product Owner." }
+      ] },
+    { id: "l7", title: "Scrum Master", min: 18,
+      body: `<p>The Scrum Master is accountable for <strong>establishing Scrum as defined in the Scrum Guide</strong>, by helping everyone understand Scrum theory and practice, both within the team and across the organisation. The Scrum Master is also accountable for the <strong>Scrum Team’s effectiveness</strong>, by enabling the team to improve its practices within the framework. The Guide describes Scrum Masters as true leaders who serve the team and the wider organisation.</p>
+<p><strong>Serving the Scrum Team:</strong> coaching members in self-management and cross-functionality; helping the team focus on high-value Increments that meet the Definition of Done; causing the removal of impediments to progress; and making sure all events take place and are positive, productive and kept within the timebox.</p>
+<p><strong>Serving the Product Owner:</strong> helping find techniques for defining the Product Goal and managing the Product Backlog; helping the team understand why clear, concise backlog items matter; helping establish empirical product planning for a complex environment; and facilitating stakeholder collaboration as requested or needed.</p>
+<p><strong>Serving the organisation:</strong> leading, training and coaching the organisation in its Scrum adoption; planning and advising Scrum implementations; helping employees and stakeholders understand and use an empirical approach to complex work; and removing barriers between stakeholders and Scrum Teams.</p>`,
+      keys: ["Accountable for establishing Scrum and for the team’s effectiveness.", "Serves the team, the Product Owner and the organisation.", "Causes impediments to be removed, often by helping the team remove them itself.", "Facilitates as requested or needed, not by default."],
+      traps: ["The Scrum Master is not a project manager or team boss, and does not assign work.", "The Scrum Master doesn’t have to attend the Daily Scrum, only make sure it happens.", "When a question asks for the best Scrum Master action, the right answer usually helps the team solve the problem itself."],
+      qs: [
+        { q: "Two Developers disagree about a technical approach during the Sprint. What should the Scrum Master do first?", o: ["Decide which approach the team will use", "Escalate to their line manager", "Let them work it out, and coach or facilitate if they need help", "Ask the Product Owner to decide"], a: [2], x: "Self-managing Developers own the how. The Scrum Master supports the team rather than deciding for it." },
+        { q: "In which two ways does the Scrum Master serve the organisation? (Choose two.)", o: ["Leading, training and coaching the organisation in its Scrum adoption", "Removing barriers between stakeholders and Scrum Teams", "Approving each release", "Writing Developers’ performance reviews"], a: [0, 1], x: "Both come straight from the Guide’s list. The other two are not Scrum Master accountabilities." }
+      ] }
+  ]
+},
+{
+  id: "m3", title: "Scrum events", area: "Understanding and applying the Scrum framework",
+  lessons: [
+    { id: "l8", title: "The Sprint", min: 15,
+      body: `<p>Sprints are the heartbeat of Scrum, where ideas become value. Each one is a fixed length of <strong>one month or less</strong>, to keep things consistent. A new Sprint starts immediately after the previous one ends. All the work needed to reach the Product Goal, including Sprint Planning, Daily Scrums, the Sprint Review and the Sprint Retrospective, happens inside Sprints.</p>
+<p>During the Sprint:</p>
+<ul><li>no changes are made that would endanger the Sprint Goal;</li><li>quality does not decrease;</li><li>the Product Backlog is refined as needed;</li><li>scope may be clarified and renegotiated with the Product Owner as more is learned.</li></ul>
+<p>Sprints make progress predictable by inspecting and adapting toward the Product Goal at least once a month. Longer Sprints risk the Sprint Goal becoming invalid and increase complexity and risk. Shorter Sprints create more learning cycles and limit cost and effort to a smaller window.</p>
+<p>Burn-downs, burn-ups and cumulative flow diagrams can help with forecasting, but they <strong>do not replace empiricism</strong>.</p>
+<p>A Sprint can be cancelled if its Sprint Goal becomes obsolete. <strong>Only the Product Owner</strong> has the authority to cancel a Sprint.</p>`,
+      keys: ["One month or less, with a fixed length.", "The next Sprint starts immediately.", "Don’t endanger the Sprint Goal or let quality drop.", "Scope can be renegotiated with the Product Owner.", "Only the Product Owner can cancel a Sprint, and only if the Sprint Goal becomes obsolete."],
+      traps: ["Scrum has no “Sprint 0”, hardening Sprint or release Sprint.", "Sprints are never extended to finish work.", "A Sprint is not cancelled just because the work is harder than expected."],
+      qs: [
+        { q: "Halfway through the Sprint, the Developers realise they won’t finish every selected item. What should they do?", o: ["Extend the Sprint by a few days", "Lower the Definition of Done", "Work with the Product Owner to renegotiate scope while keeping the Sprint Goal", "Cancel the Sprint"], a: [2], x: "Scope can be renegotiated with the Product Owner. The Sprint length and quality don’t change." },
+        { q: "Who has the authority to cancel a Sprint?", o: ["The Scrum Master", "The Developers", "The Product Owner", "Senior management"], a: [2], x: "Only the Product Owner, and only when the Sprint Goal becomes obsolete." }
+      ] },
+    { id: "l9", title: "Sprint Planning", min: 15,
+      body: `<p>Sprint Planning starts the Sprint by laying out the work to be done. The <strong>whole Scrum Team</strong> creates the plan together. The Product Owner makes sure attendees are ready to discuss the most important Product Backlog items and how they relate to the Product Goal. The team may invite other people for advice. The timebox is at most <strong>8 hours for a one-month Sprint</strong>, and usually shorter for shorter Sprints.</p>
+<p>Planning covers three topics:</p>
+<p><strong>Why is this Sprint valuable?</strong> The Product Owner proposes how the product could gain value in this Sprint. The whole team then works out a Sprint Goal that tells stakeholders why the Sprint matters. The Sprint Goal must be finalised before Sprint Planning ends.</p>
+<p><strong>What can be Done this Sprint?</strong> In discussion with the Product Owner, the Developers select items from the Product Backlog. The more they know about their past performance, upcoming capacity and the Definition of Done, the more confident their forecast will be.</p>
+<p><strong>How will the work get done?</strong> The Developers plan the work needed to create an Increment that meets the Definition of Done, often by breaking items down into pieces of one day or less. How they do this is up to them alone.</p>
+<p>The Sprint Goal, the selected items and the plan together make up the <strong>Sprint Backlog</strong>.</p>`,
+      keys: ["Up to 8 hours for a one-month Sprint.", "Three topics: why, what and how.", "The whole team crafts the Sprint Goal.", "Developers select the items, in discussion with the Product Owner.", "Output: the Sprint Backlog."],
+      traps: ["The Product Owner does not set the Sprint Goal alone.", "Developers, not the Product Owner, decide how much work to take on.", "The plan only needs enough detail to start. It keeps emerging during the Sprint."],
+      qs: [
+        { q: "What is the timebox for Sprint Planning in a two-week Sprint?", o: ["Exactly 4 hours", "At most 8 hours, usually shorter for shorter Sprints", "At most 2 hours", "No timebox"], a: [1], x: "The Guide sets a maximum of 8 hours for a one-month Sprint and says it is usually shorter for shorter Sprints. It doesn’t prescribe a formula." },
+        { q: "Who crafts the Sprint Goal?", o: ["The Product Owner", "The Developers", "The whole Scrum Team", "The stakeholders"], a: [2], x: "The Product Owner proposes how to increase value, and the whole Scrum Team defines the Sprint Goal together." }
+      ] },
+    { id: "l10", title: "Daily Scrum", min: 10,
+      body: `<p>The purpose of the Daily Scrum is to <strong>inspect progress toward the Sprint Goal and adapt the Sprint Backlog</strong> as necessary. It’s a <strong>15-minute event for the Developers</strong>, held at the same time and place every working day of the Sprint to keep things simple.</p>
+<p>If the Product Owner or Scrum Master are actively working on items in the Sprint Backlog, they take part as Developers. The Developers can use any structure and techniques they like, as long as the meeting focuses on progress toward the Sprint Goal and produces an actionable plan for the next day of work.</p>
+<p>Daily Scrums improve communication, surface impediments, speed up decisions and reduce the need for other meetings. They are not the only time the plan can change. Developers often meet during the day for more detailed discussions.</p>`,
+      keys: ["15 minutes, every working day, same time and place.", "For the Developers.", "Inspect progress toward the Sprint Goal and adapt the plan.", "No mandatory format."],
+      traps: ["The “three questions” were dropped from the Guide in 2020. They’re optional.", "It’s not a status meeting for the Scrum Master or managers.", "It’s 15 minutes regardless of Sprint length or team size."],
+      qs: [
+        { q: "Who is required to take part in the Daily Scrum?", o: ["The whole Scrum Team", "The Developers", "The Developers and the Scrum Master", "The Developers and the Product Owner"], a: [1], x: "It’s an event for the Developers. The Product Owner and Scrum Master join as Developers only if they are working on Sprint Backlog items." },
+        { q: "What is the Daily Scrum timebox for a one-week Sprint?", o: ["5 minutes", "15 minutes", "30 minutes", "Whatever the team decides"], a: [1], x: "It is always 15 minutes." }
+      ] },
+    { id: "l11", title: "Sprint Review", min: 12,
+      body: `<p>The purpose of the Sprint Review is to <strong>inspect the outcome of the Sprint and decide on future adaptations</strong>. The Scrum Team presents the results of its work to key stakeholders and discusses progress toward the Product Goal.</p>
+<p>The Scrum Team and stakeholders review what was achieved and what has changed in their environment. Based on that, they work out together what to do next, and the Product Backlog may be adjusted to meet new opportunities. The Sprint Review is a <strong>working session</strong>, and the team should avoid reducing it to a presentation.</p>
+<p>It is the second-to-last event of the Sprint, with a timebox of at most <strong>4 hours for a one-month Sprint</strong>.</p>`,
+      keys: ["Inspect the outcome and adapt the Product Backlog.", "A working session with key stakeholders, not just a demo.", "Up to 4 hours for a one-month Sprint."],
+      traps: ["The Sprint Review is never a gate for releasing value.", "It isn’t a sign-off or approval meeting.", "Only work that meets the Definition of Done is presented."],
+      qs: [
+        { q: "What is the purpose of the Sprint Review?", o: ["To get the stakeholders’ sign-off on the Increment", "To inspect the outcome of the Sprint and determine future adaptations", "To demonstrate progress to management", "To plan the next Sprint"], a: [1], x: "That is the purpose stated in the Guide. The Sprint Review is not an approval gate." },
+        { q: "True or false: an Increment may only be released after the Sprint Review.", o: ["True", "False"], a: [1], x: "Increments can be delivered at any time. The Sprint Review should never be a gate for releasing value." }
+      ] },
+    { id: "l12", title: "Sprint Retrospective", min: 12,
+      body: `<p>The purpose of the Sprint Retrospective is to <strong>plan ways to increase quality and effectiveness</strong>. The Scrum Team looks at how the last Sprint went in terms of individuals, interactions, processes, tools and the Definition of Done. It looks for assumptions that led it astray and where they came from.</p>
+<p>The team discusses what went well, what problems it ran into, and how those problems were or weren’t solved. It then identifies the changes that would most improve its effectiveness. The most impactful improvements are tackled <strong>as soon as possible</strong>, and they may even be added to the Sprint Backlog for the next Sprint.</p>
+<p>The Retrospective concludes the Sprint. Its timebox is at most <strong>3 hours for a one-month Sprint</strong>.</p>`,
+      keys: ["Plan ways to increase quality and effectiveness.", "Inspect individuals, interactions, processes, tools and the Definition of Done.", "Improvements may go into the next Sprint Backlog.", "Concludes the Sprint. Up to 3 hours."],
+      traps: ["The whole Scrum Team takes part, including the Product Owner.", "Improvements can happen at any time, not only at the Retrospective."],
+      qs: [
+        { q: "Which event concludes the Sprint?", o: ["Sprint Review", "Sprint Retrospective", "The release", "Product Backlog refinement"], a: [1], x: "The Sprint Retrospective concludes the Sprint." },
+        { q: "Which three does the Scrum Team inspect at the Sprint Retrospective? (Choose three.)", o: ["Individuals and interactions", "Processes and tools", "The Definition of Done", "Each Developer’s individual velocity"], a: [0, 1, 2], x: "The Guide lists individuals, interactions, processes, tools and the Definition of Done. Individual velocity is not part of Scrum." }
+      ] },
+    { id: "l13", title: "Timeboxes and refinement", min: 10,
+      body: `<p>Every event has a maximum length. For a one-month Sprint:</p>
+<div class="table-wrap"><table><thead><tr><th>Event</th><th>Timebox</th></tr></thead><tbody>
+<tr><td>Sprint</td><td>1 month or less (fixed length)</td></tr>
+<tr><td>Sprint Planning</td><td>8 hours max</td></tr>
+<tr><td>Daily Scrum</td><td>15 minutes</td></tr>
+<tr><td>Sprint Review</td><td>4 hours max</td></tr>
+<tr><td>Sprint Retrospective</td><td>3 hours max</td></tr>
+</tbody></table></div>
+<p>For shorter Sprints, these events are usually shorter too. The Daily Scrum is the exception: it’s always 15 minutes.</p>
+<p><strong>Product Backlog refinement</strong> is the act of breaking down and further defining backlog items into smaller, more precise items. It means adding detail such as a description, an order and a size. Refinement is an <strong>ongoing activity, not an event</strong>. The Developers who will do the work are responsible for sizing it.</p>
+<p>Items the Scrum Team can get Done within one Sprint are considered ready to be selected at Sprint Planning. They usually reach that level of clarity through refinement.</p>`,
+      keys: ["Planning 8h, Review 4h, Retrospective 3h, Daily Scrum 15 min (for a one-month Sprint).", "Refinement is ongoing, not an event.", "Developers size the work."],
+      traps: ["The 2020 Guide has no “10% of capacity” rule for refinement.", "“Definition of Ready” is not in the Scrum Guide.", "Scrum has five events: the Sprint plus the four inside it. Refinement is not one of them."],
+      qs: [
+        { q: "Is Product Backlog refinement a Scrum event?", o: ["Yes, it is timeboxed to 10% of capacity", "Yes, it happens once per Sprint", "No, it is an ongoing activity", "No, it happens only before the first Sprint"], a: [2], x: "Refinement is an ongoing activity. The 2020 Guide gives no capacity rule for it." },
+        { q: "Who is responsible for sizing Product Backlog items?", o: ["The Product Owner", "The Developers who will do the work", "The Scrum Master", "The stakeholders"], a: [1], x: "The Developers who will be doing the work are responsible for sizing. The Product Owner can influence them by helping them understand trade-offs." }
+      ] }
+  ]
+}
+];
+COURSE.push(
+{
+  id: "m4", title: "Artifacts and commitments", area: "Understanding and applying the Scrum framework",
+  lessons: [
+    { id: "l14", title: "Product Backlog and Product Goal", min: 12,
+      body: `<p>Scrum’s artifacts represent work or value. They are designed to make key information as transparent as possible. Each artifact comes with a <strong>commitment</strong> that makes progress measurable:</p>
+<div class="table-wrap"><table><thead><tr><th>Artifact</th><th>Commitment</th></tr></thead><tbody>
+<tr><td>Product Backlog</td><td>Product Goal</td></tr><tr><td>Sprint Backlog</td><td>Sprint Goal</td></tr><tr><td>Increment</td><td>Definition of Done</td></tr></tbody></table></div>
+<p>The <strong>Product Backlog</strong> is an emergent, ordered list of what is needed to improve the product. It is the single source of work undertaken by the Scrum Team.</p>
+<p>The <strong>Product Goal</strong> describes a future state of the product that the team can plan against. It lives in the Product Backlog, and the rest of the backlog emerges to define what will fulfil it. A product is a vehicle for delivering value. It has a clear boundary, known stakeholders and well-defined users or customers, and it can be a service, a physical product or something more abstract.</p>
+<p>The Product Goal is the team’s long-term objective. The team must fulfil one Product Goal, or abandon it, before taking on the next.</p>`,
+      keys: ["Three artifacts, each with a commitment.", "The Product Backlog is the single source of work.", "Only one Product Goal at a time."],
+      traps: ["The Product Backlog is never complete. It emerges.", "The Product Goal is part of the Product Backlog, not a separate document."],
+      qs: [
+        { q: "What is the commitment attached to the Product Backlog?", o: ["The Sprint Goal", "The Product Goal", "The Definition of Done", "The release plan"], a: [1], x: "Product Backlog goes with the Product Goal, Sprint Backlog with the Sprint Goal, and the Increment with the Definition of Done." },
+        { q: "How many Product Goals can a Scrum Team pursue at the same time?", o: ["One", "One per Sprint", "As many as the Product Owner wants", "One per stakeholder group"], a: [0], x: "The team must fulfil or abandon one Product Goal before taking on the next." }
+      ] },
+    { id: "l15", title: "Sprint Backlog and Sprint Goal", min: 10,
+      body: `<p>The <strong>Sprint Backlog</strong> combines the Sprint Goal (why), the selected Product Backlog items (what) and an actionable plan for delivering the Increment (how).</p>
+<p>It is a plan <strong>by and for the Developers</strong>: a highly visible, real-time picture of the work they plan to do during the Sprint. They update it throughout the Sprint as they learn more. It should have enough detail for them to inspect their progress at the Daily Scrum.</p>
+<p>The <strong>Sprint Goal</strong> is the single objective for the Sprint, and the Developers commit to it. It gives them flexibility about the exact work needed to reach it. It also creates coherence and focus, so the team works together rather than on separate initiatives.</p>
+<p>The Sprint Goal is created during Sprint Planning and added to the Sprint Backlog. If the work turns out to be different from what the Developers expected, they work with the Product Owner to negotiate the Sprint Backlog’s scope within the Sprint, <strong>without affecting the Sprint Goal</strong>.</p>`,
+      keys: ["Sprint Backlog = Sprint Goal + selected items + plan.", "Owned by the Developers and updated in real time.", "The Sprint Goal stays fixed while scope flexes."],
+      traps: ["If the Sprint Goal becomes obsolete, the Sprint is cancelled. The goal isn’t rewritten mid-Sprint.", "The Product Owner does not manage the Sprint Backlog."],
+      qs: [
+        { q: "During the Sprint, the Developers find that one selected item is much bigger than expected. What is the best response?", o: ["Change the Sprint Goal", "Work with the Product Owner to renegotiate scope while keeping the Sprint Goal", "Add more Developers", "Extend the Sprint"], a: [1], x: "Scope is negotiated with the Product Owner. The Sprint Goal stays the same." },
+        { q: "Who owns the Sprint Backlog?", o: ["The Product Owner", "The Scrum Master", "The Developers", "The whole organisation"], a: [2], x: "The Sprint Backlog is a plan by and for the Developers." }
+      ] },
+    { id: "l16", title: "Increment and Definition of Done", min: 15,
+      body: `<p>An <strong>Increment</strong> is a concrete stepping stone toward the Product Goal. Each Increment adds to all the previous ones and is thoroughly verified, so that they all work together. To provide value, an Increment must be usable.</p>
+<p>A team can create several Increments within one Sprint, and all of them are presented together at the Sprint Review. An Increment can be delivered to stakeholders <strong>before the Sprint ends</strong>. The Sprint Review should never be treated as a gate for releasing value.</p>
+<p>The <strong>Definition of Done</strong> is a formal description of the state an Increment is in when it meets the quality standards required for the product. As soon as a Product Backlog item meets the Definition of Done, an Increment exists. The Definition of Done creates transparency because everyone shares the same understanding of what work was completed.</p>
+<p>If a Product Backlog item doesn’t meet the Definition of Done, it cannot be released or presented at the Sprint Review. Instead, it <strong>returns to the Product Backlog</strong> for future consideration.</p>
+<p>If the organisation has a standard Definition of Done, every Scrum Team must follow it as a minimum. If not, the Scrum Team must create one that fits the product. When several Scrum Teams work on one product, they must define a shared Definition of Done together and all comply with it.</p>`,
+      keys: ["Each Increment adds to the previous ones and must be usable.", "Several Increments per Sprint are allowed, and they can be released early.", "Undone work returns to the Product Backlog.", "Several teams on one product share one Definition of Done."],
+      traps: ["Undone work is not carried over automatically, and “90% done” doesn’t count.", "The Definition of Done is never lowered to hit a date.", "An organisational Definition of Done is a minimum. Teams can add stricter criteria."],
+      qs: [
+        { q: "At the end of the Sprint, an item does not meet the Definition of Done. What happens to it?", o: ["It is shown at the Sprint Review with a caveat", "It is released and fixed later", "It returns to the Product Backlog for future consideration", "It automatically moves into the next Sprint"], a: [2], x: "Undone work can’t be released or presented. It returns to the Product Backlog." },
+        { q: "Four Scrum Teams build one product, and the organisation has no standard Definition of Done. What should the teams do?", o: ["Each team writes its own Definition of Done", "The Product Owner writes one for them", "They define a shared Definition of Done together and all comply with it", "They work without one until the first release"], a: [2], x: "Teams on the same product must define one Definition of Done together and all comply with it." }
+      ] }
+  ]
+},
+{
+  id: "m5", title: "Developing people and teams", area: "Developing people and teams",
+  lessons: [
+    { id: "l17", title: "Self-management in practice", min: 12,
+      body: `<p>In 2020, the Guide changed “self-organising” to <strong>self-managing</strong>. Within the Scrum framework, the team decides who does the work, how it’s done, and what it works on.</p>
+<p>Managers have no accountability inside Scrum. Their useful role is outside it: setting clear boundaries, creating an environment where the team can do its best work, removing organisational impediments, and supporting people’s growth. Assigning tasks to Developers is not part of that role.</p>
+<p>Being cross-functional is a property of the team, not of each person. Not everyone needs every skill; between them, the team must have all the skills required. Many teams grow “T-shaped” people, who are deep in one area and able to help in others.</p>
+<p>When a problem comes up inside the team, such as a member underperforming, missing skills or a disagreement, a self-managing team deals with it first. The Scrum Master coaches the team toward handling it, rather than stepping in to fix it.</p>`,
+      keys: ["Self-managing teams decide who, how and what.", "Managers support from outside the framework and don’t assign tasks.", "Cross-functional means the team as a whole has all the skills.", "Teams handle their own internal problems first."],
+      traps: ["When a question offers “the Scrum Master or manager resolves it” and “the team resolves it with coaching”, the second is usually correct.", "Each Developer doesn’t need every skill."],
+      qs: [
+        { q: "A manager starts assigning tasks to individual Developers during the Sprint. What should the Scrum Master do?", o: ["Let it continue, since managers have authority", "Coach the manager on self-management and help them find a supportive role", "Take over task assignment personally", "Ask the Product Owner to assign tasks instead"], a: [1], x: "Developers self-manage their work. The Scrum Master helps the organisation understand this and supports managers in finding a useful role." },
+        { q: "What does “cross-functional” mean in Scrum?", o: ["Every Developer has every skill", "The team as a whole has all the skills needed to create value each Sprint", "The team includes members from every department", "Developers switch roles every Sprint"], a: [1], x: "Cross-functionality belongs to the team, not to each individual." }
+      ] },
+    { id: "l18", title: "Facilitation", min: 12,
+      body: `<p>Facilitation means helping a group reach its intended outcome. A good facilitator stays neutral about the content and focuses on the process: making the purpose clear, involving everyone, respecting the timebox, and making sure decisions belong to the group.</p>
+<p>The Guide asks the Scrum Master to make sure events take place and are positive, productive and kept within the timebox. It also asks the Scrum Master to facilitate stakeholder collaboration <strong>as requested or needed</strong>. That doesn’t mean running every meeting. A mature team often facilitates its own events.</p>
+<p>Some useful techniques: collecting ideas silently before discussing them, moving from generating options to choosing between them, dot voting, agreeing in advance how decisions will be made, and working agreements the team writes itself.</p>
+<p>The Daily Scrum belongs to the Developers. The Scrum Master teaches them to keep it within 15 minutes and focused on the Sprint Goal, and doesn’t run it as a status meeting.</p>`,
+      keys: ["Facilitation serves the group’s outcome. The facilitator stays neutral on content.", "Scrum Masters facilitate as requested or needed.", "The Daily Scrum belongs to the Developers."],
+      traps: ["A facilitator does not make the decision for the group.", "The Scrum Master is not required to run every event."],
+      qs: [
+        { q: "During a refinement session the Scrum Master is facilitating, the Developers can’t agree on how to split an item. What is the best facilitation approach?", o: ["The Scrum Master picks the best split", "Add structure, such as silent idea collection and a decision method, so the group can reach its own decision", "End the session and let the Product Owner decide", "Leave the item unsplit"], a: [1], x: "A facilitator helps the group decide for itself rather than deciding for it." },
+        { q: "True or false: the Scrum Master must facilitate every Daily Scrum.", o: ["True", "False"], a: [1], x: "The Scrum Master makes sure the Daily Scrum happens and teaches the Developers to keep it within the timebox. The Developers run it themselves." }
+      ] },
+    { id: "l19", title: "Coaching, teaching and leading", min: 12,
+      body: `<p>A Scrum Master switches between stances depending on what the team needs. These stances come from the Scrum.org community, not from the Scrum Guide.</p>
+<p><strong>Teacher:</strong> when people don’t yet know Scrum, explain the rules and the reasons behind them. <strong>Coach:</strong> when people know the rules but need to grow, ask questions that help them find their own answers. <strong>Mentor:</strong> share your own experience. <strong>Facilitator:</strong> help the group through a process. <strong>Impediment remover:</strong> deal with what the team can’t solve itself. <strong>Change agent:</strong> help the wider organisation adopt an empirical way of working.</p>
+<p>The Guide describes Scrum Masters as true leaders who serve. Their influence comes from helping people, not from formal authority.</p>
+<p><strong>Impediments.</strong> The Scrum Master <em>causes</em> impediments to be removed. When the team can solve a problem itself, the Scrum Master coaches it to do so, which builds self-management. Problems beyond the team’s reach, such as organisational barriers, are ones the Scrum Master takes on directly or escalates.</p>
+<p><strong>Conflict.</strong> Healthy disagreement improves decisions. The Scrum Master lets the team work through it and steps in only when the conflict becomes destructive.</p>`,
+      keys: ["Choose the stance that fits the situation.", "Teach when people don’t know Scrum. Coach when they need to grow.", "Help the team remove its own impediments where it can."],
+      traps: ["The Scrum Master doesn’t remove every impediment personally.", "The stances are community ideas, not Scrum Guide rules."],
+      qs: [
+        { q: "A new team doesn’t understand why the Sprint Review exists. Which stance should the Scrum Master take?", o: ["Coaching: ask open questions until they work it out", "Teaching: explain the purpose of the event", "Do nothing, and let them learn by failing", "Cancel the Sprint Review until they understand it"], a: [1], x: "When people don’t know the rules yet, teaching is the right stance." },
+        { q: "The Developers raise an impediment that is within their power to resolve. What should the Scrum Master do?", o: ["Resolve it straight away", "Escalate it to management", "Coach the Developers to resolve it themselves", "Log it for the Retrospective"], a: [2], x: "Coaching the team to solve problems within its reach builds self-management." }
+      ] }
+  ]
+},
+{
+  id: "m6", title: "Managing products with agility", area: "Managing products with agility",
+  lessons: [
+    { id: "l20", title: "Product value and stakeholders", min: 12,
+      body: `<p>Value is about <strong>outcomes</strong>, such as happier customers or business results, not output such as the number of features or story points. The Product Owner is accountable for maximising value and represents stakeholders’ needs in the Product Backlog.</p>
+<p>Stakeholders inspect the Increment and give feedback mainly at the <strong>Sprint Review</strong>. Collaboration with them can happen at any time, and the Scrum Master facilitates it as requested or needed.</p>
+<p>Scrum.org’s <strong>Evidence-Based Management</strong> (EBM) offers four key value areas for measuring value:</p>
+<ul><li><strong>Current Value</strong>: the value the product delivers today;</li><li><strong>Unrealised Value</strong>: the value that could still be delivered;</li><li><strong>Time to Market</strong>: how quickly the team can deliver;</li><li><strong>Ability to Innovate</strong>: how effectively the team can deliver new capabilities.</li></ul>
+<p>Velocity measures output, not value, and comparing velocity across teams is meaningless.</p>`,
+      keys: ["Value means outcomes, not output.", "Stakeholders give feedback mainly at the Sprint Review.", "EBM key value areas: Current Value, Unrealised Value, Time to Market, Ability to Innovate."],
+      traps: ["Velocity is not a measure of value.", "Stakeholders don’t manage the Product Backlog. They influence it through the Product Owner."],
+      qs: [
+        { q: "Which is the best indicator that a product is delivering value?", o: ["Velocity is going up", "The number of features shipped", "Customer outcomes and satisfaction", "The number of hours the team works"], a: [2], x: "Value is measured in outcomes. Velocity and feature counts measure output." },
+        { q: "At which event do stakeholders mainly inspect the Increment and give feedback?", o: ["Sprint Planning", "Daily Scrum", "Sprint Review", "Sprint Retrospective"], a: [2], x: "At the Sprint Review, the team and stakeholders inspect the outcome and decide what to do next." }
+      ] },
+    { id: "l21", title: "Product Backlog management", min: 12,
+      body: `<p>The Product Owner is accountable for the Product Backlog, including its content, its order and its transparency. Other people can contribute items, but ordering is the Product Owner’s decision.</p>
+<p>The Guide doesn’t prescribe how to order the backlog. Common factors include value, risk, dependencies, learning and cost. Items near the top are usually clearer and more detailed than items further down.</p>
+<p>Items have attributes such as a description, an order and a size, and these vary by domain. User stories are a popular format but are <strong>not required</strong>. Technical work, including paying down technical debt, should be visible, either as backlog items or through a stronger Definition of Done.</p>
+<p>A transparent backlog lets anyone see what’s planned and why, which reduces surprises and supports good decisions.</p>`,
+      keys: ["The Product Owner is accountable for content, order and transparency.", "The ordering method isn’t prescribed.", "User stories are optional.", "Make technical work visible."],
+      traps: ["Ordering is not the same as prioritising by value alone. Risk and dependencies matter too.", "The Developers don’t order the backlog, though they help refine it."],
+      qs: [
+        { q: "Who orders the Product Backlog?", o: ["The Developers", "The Product Owner", "The Scrum Master", "The stakeholders by vote"], a: [1], x: "Ordering the Product Backlog is a Product Owner accountability." },
+        { q: "Must Product Backlog items be written as user stories?", o: ["Yes, always", "Only for customer-facing features", "No, the format is up to the team", "Only if the organisation requires it"], a: [2], x: "The Guide doesn’t prescribe any format. User stories are a complementary practice." }
+      ] },
+    { id: "l22", title: "Forecasting and release planning", min: 12,
+      body: `<p>In complex work, the future is uncertain. Empiricism says only what has already happened can be used for forward-looking decisions. Practices such as burn-downs, burn-ups and cumulative flow diagrams can help with forecasting, but they <strong>do not replace empiricism</strong>.</p>
+<p>The Product Owner can forecast when backlog items or goals are likely to be completed by looking at past performance and the work remaining. Progress toward the Product Goal is discussed at every Sprint Review.</p>
+<p>Increments can be released at any time, including several times within one Sprint. Deciding when to release is a business decision, usually made by the Product Owner as the person accountable for value.</p>
+<p>Velocity is an optional practice. It reflects only one team’s history, and it’s meaningless to compare it between teams or to use it as a performance target.</p>`,
+      keys: ["Forecasts are based on what has actually happened.", "Charts and other forecasting tools help but don’t replace empiricism.", "Releases can happen any time, even several per Sprint."],
+      traps: ["Scrum doesn’t require a release at the end of every Sprint, only a usable Increment.", "A forecast is not a commitment to scope."],
+      qs: [
+        { q: "According to the Scrum Guide, what is true of burn-down and burn-up charts?", o: ["They are required in every Sprint", "They can be useful, but they don’t replace empiricism", "They are the Scrum Master’s main reporting tool", "They are banned in Scrum"], a: [1], x: "The Guide says such practices have proven useful but do not replace empiricism." },
+        { q: "Can a Scrum Team release more than once in a Sprint?", o: ["Yes", "No, only at the end of the Sprint", "Only with management approval", "Only after the Sprint Review"], a: [0], x: "Increments can be delivered to stakeholders before the Sprint ends, and more than once." }
+      ] }
+  ]
+},
+{
+  id: "m7", title: "Exam readiness", area: "Exam preparation",
+  lessons: [
+    { id: "l23", title: "Scaling and edge cases", min: 12,
+      body: `<p><strong>Multiple teams, one product:</strong> the teams share one Product Goal, one Product Backlog, one Product Owner and one Definition of Done, and they produce an integrated Increment. Scrum.org’s scaling framework, Nexus, builds on this, but PSM I only needs the basics.</p>
+<p><strong>One person, several accountabilities:</strong> the Guide doesn’t forbid one person being a Scrum Master and a Developer, or a Product Owner and a Developer. Combining Product Owner and Scrum Master is allowed too, but it creates a conflict of focus. One person can also be Scrum Master for more than one team.</p>
+<p><strong>Team changes:</strong> changing a team’s membership usually lowers productivity for a while. The team and organisation should weigh that cost.</p>
+<p><strong>Technical debt:</strong> keep it visible, either in the Product Backlog or through a stricter Definition of Done, and don’t let quality decrease to meet a date.</p>
+<p><strong>The first Sprint:</strong> it delivers an Increment like any other Sprint. Scrum has no “Sprint 0” for setup without value.</p>`,
+      keys: ["Several teams on one product share one Product Goal, backlog, Product Owner and Definition of Done.", "Combining accountabilities in one person is allowed.", "Even the first Sprint must produce a usable Increment."],
+      traps: ["Answers that propose one Product Owner per team on the same product are wrong.", "A “Sprint 0” or architecture-only Sprint is not Scrum."],
+      qs: [
+        { q: "Can one person be the Scrum Master for more than one Scrum Team?", o: ["Yes", "No", "Only with Product Owner approval", "Only on scaled projects"], a: [0], x: "The Guide doesn’t forbid it." },
+        { q: "What should the first Sprint of a new product deliver?", o: ["Only architecture and setup", "A usable Increment that meets the Definition of Done", "A complete requirements document", "A release plan"], a: [1], x: "Every Sprint, including the first, should produce at least one valuable, usable Increment." }
+      ] },
+    { id: "l24", title: "Exam format and strategy", min: 10,
+      body: `<p>Exam facts from Scrum.org: <strong>80 questions in 60 minutes</strong>, with a passing score of <strong>85%</strong>, which means 68 correct answers. Questions are multiple choice, multiple answer or true/false. The exam costs $200, each password allows one attempt, passwords don’t expire, and the certification is valid for life.</p>
+<p>That gives you about <strong>45 seconds per question</strong>, so pacing matters.</p>
+<ul><li>Answer quick questions straight away, and bookmark any you’re unsure about to revisit.</li><li>Read every word. “Best”, “most”, “must” and “first” all change the answer.</li><li>Multiple-answer questions tell you how many to choose, so use that count to check yourself.</li><li>Answer according to the Scrum Guide, not according to how your company does Scrum.</li><li>Be suspicious of answers where the Scrum Master or a manager decides for the team.</li><li>Leave a few minutes at the end to review your bookmarked questions.</li></ul>
+<p>The best readiness signal: score <strong>100% on Scrum.org’s free Scrum Open assessment three times in a row</strong>, and score 95% or more on full-length timed mocks.</p>
+<p class="cta-line"><a href="https://www.scrum.org/open-assessments/scrum-open" target="_blank" rel="noopener">Take the Scrum Open assessment</a></p>`,
+      keys: ["80 questions, 60 minutes, 85% to pass (68 correct).", "About 45 seconds per question.", "Answer by the Guide, not by your company’s practice.", "Readiness: Scrum Open at 100% three times."],
+      traps: ["Don’t get stuck on one question. Bookmark it and move on.", "Your own experience can mislead you when it differs from the Guide."],
+      qs: [
+        { q: "How many correct answers do you need to pass the PSM I exam?", o: ["60", "64", "68", "72"], a: [2], x: "85% of 80 questions is 68." },
+        { q: "On average, how much time do you have per question?", o: ["30 seconds", "45 seconds", "60 seconds", "90 seconds"], a: [1], x: "60 minutes divided by 80 questions is 45 seconds." }
+      ] },
+    { id: "l25", title: "The traps that catch people", min: 12,
+      body: `<p>Common wrong answers on PSM I come from mixing up older versions of the Guide with the current one, or common workplace practice with the Guide. Here is a consolidated list:</p>
+<ul>
+<li>A “Development Team” inside the Scrum Team: this is 2017 language. There is one Scrum Team with Developers in it.</li>
+<li>The “three questions” at the Daily Scrum: these are optional.</li>
+<li>Refinement taking “up to 10% of capacity”: this rule was removed in 2020.</li>
+<li>A “Definition of Ready”, “Sprint 0” or “hardening Sprint”: none of these are in Scrum.</li>
+<li>Extending a Sprint to finish work: never allowed.</li>
+<li>The Product Owner setting the Sprint Goal alone: the whole team crafts it.</li>
+<li>The Scrum Master assigning tasks or running the Daily Scrum: the Developers self-manage.</li>
+<li>The Sprint Review as a sign-off or release gate: it isn’t one.</li>
+<li>Showing undone work at the Sprint Review: not allowed. Undone work returns to the Product Backlog.</li>
+<li>One Product Owner per team on a shared product: there should be one Product Owner for the product.</li>
+<li>Lowering the Definition of Done to meet a deadline: quality does not decrease.</li>
+<li>Velocity as a measure of value or a way to compare teams: it’s neither.</li>
+<li>Only the Scrum Master can cancel a Sprint: only the Product Owner can.</li>
+</ul>`,
+      keys: ["Watch for 2017-era terms.", "Watch for answers where someone decides for the team.", "Watch for answers that compromise quality or the Sprint’s fixed length."],
+      traps: ["When two answers both look right, choose the one that best supports empiricism and self-management."],
+      qs: [
+        { q: "Which of these is part of the 2020 Scrum Guide?", o: ["Definition of Ready", "Sprint 0", "Product Goal", "Hardening Sprint"], a: [2], x: "The Product Goal was introduced in 2020. The others are not part of Scrum." },
+        { q: "The Developers are behind schedule. A manager suggests skipping testing to hit the release date. What does Scrum say?", o: ["Allowed if the Product Owner agrees", "Quality does not decrease. Renegotiate scope instead.", "Allowed once per release", "The Scrum Master decides"], a: [1], x: "During the Sprint, quality does not decrease. Scope is what gets negotiated." }
+      ] },
+    { id: "g2", title: "Second read of the Scrum Guide", min: 25,
+      body: `<p>Now read the Scrum Guide a second time, slowly and actively. Before each section, try to recall what it says, then read it to check. Write down anything that surprises you; those are exactly the details exam questions target.</p>
+<p>Pay particular attention to who is accountable for each part, the exact timeboxes, the three commitments, and the sentences containing <em>must</em> or <em>only</em>.</p>
+<p>When you finish, take a full mock exam on the Practice tab. Then take Scrum.org’s Scrum Open assessment until you score 100% three times in a row.</p>
+<p class="cta-line"><a href="https://scrumguides.org/scrum-guide.html" target="_blank" rel="noopener">Open the Scrum Guide (scrumguides.org)</a></p>`,
+      keys: ["Recall each section before reading it.", "Note every surprise.", "Finish with a full mock exam."],
+      traps: [],
+      qs: [] }
+  ]
+}
+);
+
+const EXTRA_QS = [
+  { q: "What is the maximum length of a Sprint?", o: ["Two weeks", "One month", "Six weeks", "Whatever the team needs"], a: [1], x: "Sprints are fixed-length events of one month or less." },
+  { q: "When does a new Sprint start?", o: ["After a short planning break", "Immediately after the previous Sprint ends", "When the Product Owner is ready", "On the first Monday after the Sprint Review"], a: [1], x: "A new Sprint starts immediately after the previous one ends." },
+  { q: "Which of these are Scrum Values? (Choose two.)", o: ["Openness", "Courage", "Velocity", "Predictability"], a: [0, 1], x: "The five values are commitment, focus, openness, respect and courage." },
+  { q: "What is the Scrum Master accountable for? (Choose two.)", o: ["Establishing Scrum as defined in the Scrum Guide", "The Scrum Team’s effectiveness", "Maximising product value", "Ordering the Product Backlog"], a: [0, 1], x: "Value and backlog ordering belong to the Product Owner." },
+  { q: "The Product Owner is sick during Sprint Planning. Who should finalise the Sprint Goal?", o: ["The Scrum Master", "The Developers alone", "The Scrum Team, and the Product Owner must still be part of it, for example by joining remotely or rescheduling", "The stakeholders"], a: [2], x: "The whole Scrum Team crafts the Sprint Goal, and the Product Owner’s input about value is essential." },
+  { q: "True or false: the Sprint Backlog can change during the Sprint.", o: ["True", "False"], a: [0], x: "The Developers update the Sprint Backlog throughout the Sprint as they learn more, while the Sprint Goal stays the same." },
+  { q: "Which statement about the Definition of Done is correct?", o: ["Each Developer has their own", "It can be relaxed near deadlines", "It creates transparency by giving everyone a shared understanding of completed work", "Only the Product Owner can change it"], a: [2], x: "A shared Definition of Done creates transparency about what is actually complete." },
+  { q: "When are Product Backlog items considered ready for selection in Sprint Planning?", o: ["When they meet the Definition of Ready", "When the Scrum Team can get them Done within one Sprint", "When stakeholders approve them", "When they are written as user stories"], a: [1], x: "Items that can be Done within one Sprint are considered ready for selection. “Definition of Ready” is not a Scrum term." },
+  { q: "Who can attend the Sprint Review?", o: ["Only the Scrum Team", "The Scrum Team and key stakeholders", "Only management", "Only the Product Owner and customers"], a: [1], x: "The Scrum Team presents results to key stakeholders and they collaborate." },
+  { q: "What is the purpose of the Sprint Retrospective?", o: ["To review the product with stakeholders", "To plan ways to increase quality and effectiveness", "To update the release plan", "To assess individual performance"], a: [1], x: "That is its stated purpose in the Guide." },
+  { q: "The Product Owner wants to add a new, urgent item mid-Sprint. It doesn’t affect the Sprint Goal. What should happen?", o: ["It can never be added", "The Developers and Product Owner can discuss it, and scope can be renegotiated as long as the Sprint Goal is not endangered", "The Scrum Master decides", "The Sprint must be cancelled"], a: [1], x: "Scope can be clarified and renegotiated as long as the Sprint Goal is not endangered." },
+  { q: "Who is responsible for all product-related activities, such as operations, maintenance and experimentation?", o: ["A separate operations team", "The Scrum Team", "The Product Owner alone", "The Scrum Master"], a: [1], x: "The Scrum Team is responsible for all product-related activities." },
+  { q: "What is the timebox for the Sprint Retrospective in a one-month Sprint?", o: ["1 hour", "2 hours", "3 hours", "4 hours"], a: [2], x: "At most 3 hours for a one-month Sprint." },
+  { q: "What is the timebox for the Sprint Review in a one-month Sprint?", o: ["2 hours", "3 hours", "4 hours", "8 hours"], a: [2], x: "At most 4 hours for a one-month Sprint." },
+  { q: "What does the Sprint Goal give the Developers?", o: ["A fixed list of tasks", "Flexibility in the exact work needed to achieve it", "Permission to change the Product Goal", "A deadline for releases"], a: [1], x: "The Sprint Goal creates focus while leaving the Developers flexibility about the exact work." },
+  { q: "Which three are artifacts in Scrum? (Choose three.)", o: ["Product Backlog", "Sprint Backlog", "Increment", "Burn-down chart", "Release plan"], a: [0, 1, 2], x: "Scrum has three artifacts. Charts and plans are optional practices." },
+  { q: "A stakeholder asks the Developers directly to add work to the Sprint. What should the Developers do?", o: ["Add it immediately", "Refer the request to the Product Owner", "Ask the Scrum Master to approve it", "Start a new Sprint"], a: [1], x: "Changes to the backlog go through the Product Owner, who represents stakeholder needs." },
+  { q: "Who is accountable for the Scrum Team’s effectiveness?", o: ["The Product Owner", "The Scrum Master", "Senior management", "The Developers"], a: [1], x: "The Scrum Master is accountable for the Scrum Team’s effectiveness." },
+  { q: "What happens when the Sprint Goal becomes obsolete?", o: ["The team rewrites it", "The Product Owner may cancel the Sprint", "The Sprint continues unchanged", "The Scrum Master extends the Sprint"], a: [1], x: "The Product Owner may cancel a Sprint if its Sprint Goal becomes obsolete." },
+  { q: "Why does Scrum use Sprints of a consistent length?", o: ["To make reporting easier", "To create a regular rhythm for inspection and adaptation", "To meet contractual requirements", "Because tools require it"], a: [1], x: "A consistent rhythm supports predictability through regular inspection and adaptation." },
+  { q: "Several Scrum Teams work on one product. Which statement is true?", o: ["Each team has its own Product Goal", "They share one Product Backlog and one Product Owner", "Each team needs its own Scrum Master", "They must all use the same Sprint length and the same Developers"], a: [1], x: "Teams on one product share the Product Goal, the Product Backlog and the Product Owner." },
+  { q: "True or false: an Increment must be released to customers at the end of every Sprint.", o: ["True", "False"], a: [1], x: "An Increment must be usable. Whether and when to release it is a business decision." },
+  { q: "What is the main purpose of transparency in Scrum?", o: ["To report progress to management", "To enable inspection, because decisions are based on the perceived state of the artifacts", "To satisfy auditors", "To replace documentation"], a: [1], x: "Transparency enables inspection, and inspection without transparency is misleading." },
+  { q: "Who must take part in the Sprint Retrospective?", o: ["The Developers only", "The Developers and the Scrum Master", "The entire Scrum Team", "The Scrum Team and stakeholders"], a: [2], x: "The Scrum Team inspects itself, and that includes the Product Owner." },
+  { q: "During Sprint Planning, how do the Developers decide how much work to select?", o: ["The Product Owner tells them", "They use their past performance, upcoming capacity and the Definition of Done", "The Scrum Master calculates it", "They select everything at the top of the backlog"], a: [1], x: "The more the Developers know about their past performance, capacity and the Definition of Done, the more confident their forecast." },
+  { q: "Which statement about managers in Scrum is most accurate?", o: ["They attend the Daily Scrum to track progress", "They support the team by shaping the environment and removing organisational impediments", "They assign work to Developers", "They own the Sprint Backlog"], a: [1], x: "Managers have no Scrum accountability. They help most by supporting the environment the team works in." }
+];
+(function(){
+"use strict";
+const KEY = "psm1-course:v1";
+const LESSONS = COURSE.flatMap(m => m.lessons.map(l => ({...l, module: m})));
+const TOTAL_MIN = LESSONS.reduce((s,l) => s + l.min, 0);
+const ALL_QS = LESSONS.flatMap(l => l.qs.map((q,i) => ({...q, id: l.id + "-" + i, from: l.title}))).concat(EXTRA_QS.map((q,i) => ({...q, id: "x-" + i, from: "Mixed review"})));
+const STATUS = { active: "In progress", paused: "Paused", completed: "Completed", cancelled: "Cancelled" };
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const calm = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- dates ---------- */
+const ymd = d => d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (s,n) => { const d = parse(s); d.setDate(d.getDate()+n); return ymd(d); };
+const diff = (a,b) => Math.round((parse(b) - parse(a)) / 86400000);
+const today = () => ymd(new Date());
+const nice = s => parse(s).toLocaleDateString(undefined, {day:"numeric", month:"short"});
+const long = s => parse(s).toLocaleDateString(undefined, {weekday:"long", day:"numeric", month:"long"});
+
+/* ---------- storage ---------- */
+let storageOk = true;
+function blank(){ return { version:2, start:null, target:null, status:null, pauses:[], history:[], done:{}, quiz:{}, mocks:[], theme:{mode:"system", accent:"sage"} }; }
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY); if (!raw) return blank();
+    const s = Object.assign(blank(), JSON.parse(raw));
+    if (s.target && !s.status) s.status = "active"; // upgrade from v1
+    return s;
+  } catch(e){ storageOk = false; return blank(); }
+}
+let S = load();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){ storageOk = false; } }
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2400); }
+
+/* ---------- delights ---------- */
+function confetti(amount){
+  if (calm()) return;
+  const cv = $("#confetti"), ctx = cv.getContext("2d"), dpr = window.devicePixelRatio || 1;
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+  const cs = getComputedStyle(document.documentElement);
+  const cols = ["--sage","--sky","--amber","--sage-deep"].map(v => cs.getPropertyValue(v).trim());
+  const parts = Array.from({length: amount || 70}, () => ({
+    x: innerWidth/2 + (Math.random()-.5)*160, y: innerHeight*0.35,
+    vx: (Math.random()-.5)*9, vy: -Math.random()*9-3, r: Math.random()*Math.PI, vr: (Math.random()-.5)*.3,
+    w: 5 + Math.random()*5, h: 3 + Math.random()*4, c: cols[Math.floor(Math.random()*cols.length)], life: 0
+  }));
+  let frame = 0;
+  (function step(){
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach(p => { p.vy += .25; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      ctx.save(); ctx.globalAlpha = Math.max(0, 1 - frame/110); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h); ctx.restore(); });
+    if (++frame < 110) requestAnimationFrame(step); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })();
+}
+function countUp(){
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const to = +el.dataset.count, suffix = el.dataset.suffix || "";
+    if (calm() || !fresh) { el.textContent = to + suffix; return; }
+    const t0 = performance.now(), dur = 700;
+    (function f(now){ const k = Math.min(1, (now - t0)/dur), e = 1 - Math.pow(1-k, 3);
+      el.textContent = Math.round(to*e) + suffix; if (k < 1) requestAnimationFrame(f); })(t0);
+  });
+}
+function streak(){
+  const days = new Set(Object.values(S.done).concat(S.mocks.map(m => m.date)));
+  let d = today(); if (!days.has(d)) d = addDays(d, -1);
+  let n = 0; while (days.has(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+
+/* ---------- planning ---------- */
+function plan(){
+  const t = today();
+  const remaining = LESSONS.filter(l => !S.done[l.id]);
+  const remainingMin = remaining.reduce((s,l) => s + l.min, 0);
+  const doneToday = LESSONS.filter(l => S.done[l.id] === t);
+  const doneTodayMin = doneToday.reduce((s,l) => s + l.min, 0);
+  let studyEnd = addDays(S.target, -1);   // the day before the exam is kept for review
+  if (diff(t, studyEnd) < 0) studyEnd = t;
+  const daysLeft = diff(t, studyEnd) + 1;
+  const daily = Math.ceil((remainingMin + doneTodayMin) / Math.max(daysLeft,1));
+  const list = doneToday.slice();
+  let acc = doneTodayMin;
+  for (const l of remaining){ if (acc >= daily) break; list.push(l); acc += l.min; }
+  return { t, studyEnd, daysLeft, daily, list, remainingMin, examIn: diff(t, S.target) };
+}
+function archive(status){
+  if (S.status === "paused") { const p = S.pauses[S.pauses.length-1]; if (p && !p.to) p.to = today(); }
+  const best = S.mocks.length ? Math.max(...S.mocks.map(m => Math.round(m.correct/m.total*100))) : null;
+  S.history.push({ start: S.start, target: S.target, status, ended: today(), lessons: LESSONS.filter(l => S.done[l.id]).length, best });
+  S.start = null; S.target = null; S.status = null; S.pauses = [];
+  save();
+}
+
+/* ---------- burndown ---------- */
+let animateChart = true;
+function burndown(){
+  const start = S.start, end = diff(start, addDays(S.target, -1)) < 1 ? addDays(start, 1) : addDays(S.target, -1);
+  const span = Math.max(diff(start, end), 1);
+  const W = 680, H = 260, L = 46, R = 30, T = 16, B = 34;
+  const cx = d => Math.min(Math.max(diff(start, d), 0), span);
+  const x = d => L + (cx(d) / span) * (W - L - R);
+  const y = v => T + (1 - v / TOTAL_MIN) * (H - T - B);
+  const t = today();
+  const last = diff(t, end) < 0 ? end : t;
+  const pts = [];
+  for (let d = start; diff(d, last) >= 0 && pts.length < 400; d = addDays(d, 1)){
+    const doneBy = LESSONS.filter(l => S.done[l.id] && diff(S.done[l.id], d) >= 0).reduce((s,l) => s + l.min, 0);
+    pts.push([x(d), y(TOTAL_MIN - doneBy)]);
+  }
+  const ticks = []; const step = Math.max(1, Math.ceil(span / 7));
+  for (let i = 0; i <= span; i += step) ticks.push(addDays(start, i));
+  const hrs = [0, .25, .5, .75, 1].map(f => Math.round(TOTAL_MIN * f));
+  const shades = S.pauses.map(p => { const a = x(p.from), b = x(p.to || t); return `<rect x="${a}" y="${T}" width="${Math.max(b-a, 3)}" height="${H-T-B}" fill="var(--amber-mist)"/>`; }).join("");
+  const anim = animateChart ? " draw" : "";
+  const lastPt = pts[pts.length-1];
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Study burndown: remaining reading minutes against the ideal line">
+  ${shades}
+  ${hrs.map(v => `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--faint)">${v}</text>`).join("")}
+  ${ticks.map(d => `<text x="${x(d)}" y="${H-12}" text-anchor="middle" font-size="11" fill="var(--faint)">${nice(d)}</text>`).join("")}
+  <line x1="${x(start)}" y1="${y(TOTAL_MIN)}" x2="${x(end)}" y2="${y(0)}" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="5 5"/>
+  ${diff(start,t) >= 0 && diff(t,end) >= 0 ? `<line x1="${x(t)}" x2="${x(t)}" y1="${T}" y2="${H-B}" stroke="var(--line)" stroke-width="1.5"/><text x="${x(t)+5}" y="${T+10}" font-size="11" fill="var(--muted)">Today</text>` : ""}
+  ${pts.length > 1 ? `<polyline class="actual${anim}" pathLength="100" points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>` : ""}
+  ${lastPt ? `<circle class="head${anim}" cx="${lastPt[0]}" cy="${lastPt[1]}" r="5" fill="var(--sage)" stroke="var(--surface)" stroke-width="2"/>` : ""}
+  <text x="${L}" y="${T-4}" font-size="11" fill="var(--faint)">minutes left</text>
+</svg>`;
+}
+
+/* ---------- sidebar ---------- */
+let popId = null;
+function renderSide(route){
+  const doneCount = LESSONS.filter(l => S.done[l.id]).length;
+  const pct = Math.round(doneCount / LESSONS.length * 100);
+  $("#overall").innerHTML = `<div class="overall-row"><span>${doneCount} of ${LESSONS.length} lessons</span><span>${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div>`;
+  const cur = r => route === r ? ' aria-current="page"' : "";
+  $("#navtop").innerHTML = `<a class="nav-link" href="#plan"${cur("plan")}>Study plan</a><a class="nav-link" href="#practice"${cur("practice")}>Practice exam</a><a class="nav-link" href="#sheet"${cur("sheet")}>Cheat sheet</a>`;
+  $("#outline").innerHTML = COURSE.map(m => `<div class="mod">${esc(m.title)}</div>` + m.lessons.map(l => {
+    const n = LESSONS.findIndex(x => x.id === l.id) + 1;
+    return `<a class="lesson-link${S.done[l.id] ? " done" : ""}" href="#${l.id}"${route === l.id ? ' aria-current="page"' : ""}><span class="tick${popId === l.id ? " pop" : ""}"></span><span>${n}. ${esc(l.title)}</span></a>`;
+  }).join("")).join("");
+  const th = S.theme || {};
+  $("#appearance").innerHTML = `<h3>Appearance</h3>
+    <div class="seg" role="group" aria-label="Colour mode">${["system","light","dark"].map(m => `<button data-mode="${m}" aria-pressed="${(th.mode||"system") === m}">${m[0].toUpperCase()+m.slice(1)}</button>`).join("")}</div>
+    <div class="swatches" role="group" aria-label="Accent colour">${Object.entries(PSM_ACCENTS).map(([k,v]) => `<button class="swatch" data-accent="${k}" aria-pressed="${(th.accent||"sage") === k}" aria-label="${v.name} accent" title="${v.name}" style="background:${v[document.documentElement.dataset.mode === "dark" ? "dark" : "light"][0]}"></button>`).join("")}</div>`;
+}
+
+
+/* ---------- KPI cards ---------- */
+function statsBlock(p, doneCount, best, st){
+  const anim = fresh && !calm() ? " grow" : "";
+  // 1. lessons: progress ring
+  const pct = doneCount / LESSONS.length, C = 2 * Math.PI * 20;
+  const ring = `<svg class="kpi-vis" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="20" fill="none" stroke="var(--line)" stroke-width="5"/>
+    <circle class="ring${anim}" cx="26" cy="26" r="20" fill="none" stroke="var(--sage)" stroke-width="5" stroke-linecap="round" transform="rotate(-90 26 26)" style="--c:${C};--o:${C*(1-pct)}" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/>
+    <text x="26" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">${Math.round(pct*100)}%</text></svg>`;
+  // 2. days: one segment per day of the plan
+  const span = Math.max(diff(S.start, S.target), 1), passed = Math.min(Math.max(diff(S.start, today()), 0), span);
+  const n = Math.min(span, 28), per = span / n;
+  const segs = Array.from({length:n}, (_,i) => { const k = (i+1)*per <= passed ? "past" : (i*per <= passed ? "now" : ""); return `<i class="${k}" style="--d:${i*18}ms"></i>`; }).join("");
+  const days = `<div class="kpi-vis segs${anim}" style="grid-template-columns:repeat(${n},1fr)" aria-hidden="true">${segs}</div>`;
+  // 3. score: sparkline of recent mocks with the 85% line
+  const ms = S.mocks.slice(-8).map(m => Math.round(m.correct/m.total*100));
+  const W = 104, H = 44, yy = v => 4 + (1 - Math.max(v-40,0)/60) * (H-8);
+  const xs = i => ms.length === 1 ? W/2 : 4 + i * (W-8) / (ms.length-1);
+  const spark = ms.length ? `<svg class="kpi-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${yy(85)}" y2="${yy(85)}" stroke="var(--faint)" stroke-dasharray="3 3" stroke-width="1"/>
+    ${ms.length > 1 ? `<polyline class="spark${anim}" pathLength="100" points="${ms.map((v,i) => xs(i)+","+yy(v)).join(" ")}" fill="none" stroke="var(--sage)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : ""}
+    ${ms.map((v,i) => `<circle cx="${xs(i)}" cy="${yy(v)}" r="${i === ms.length-1 ? 3.5 : 2.2}" fill="${v >= 85 ? "var(--sage)" : "var(--rose)"}"/>`).join("")}
+    <text x="${W}" y="${yy(85)-3}" text-anchor="end" font-size="8" fill="var(--faint)">85%</text></svg>`
+    : `<svg class="kpi-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${yy(85)}" y2="${yy(85)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="0" y="${H-4}" font-size="9" fill="var(--faint)">No attempts yet</text></svg>`;
+  // 4. streak: last 7 days
+  const active = new Set(Object.values(S.done).concat(S.mocks.map(m => m.date)));
+  const week = Array.from({length:7}, (_,i) => addDays(today(), i-6));
+  const dots = `<div class="kpi-vis week${anim}" aria-hidden="true">${week.map((d,i) => `<span class="${active.has(d) ? "on" : ""} ${d === today() ? "today" : ""}" style="--d:${i*60}ms"><b></b><em>${parse(d).toLocaleDateString(undefined,{weekday:"narrow"})}</em></span>`).join("")}</div>`;
+  const card = (cls, vis, val, label) => `<div class="stat ${cls}"><div class="stat-vis">${vis}</div><b>${val}</b><span>${label}</span></div>`;
+  return `<div class="stats">
+    ${card("", ring, `<span data-count="${doneCount}">${doneCount}</span><small>/${LESSONS.length}</small>`, "lessons done")}
+    ${card("", days, `<span data-count="${Math.max(p.examIn,0)}">${Math.max(p.examIn,0)}</span>`, (p.examIn === 1 ? "day" : "days") + " to the exam")}
+    ${card("", spark, best === null ? "–" : `<span data-count="${best}" data-suffix="%">${best}%</span>`, "best practice score")}
+    ${card(st ? "streak-on" : "", dots, `<span data-count="${st}">${st}</span> <span class="leaf" aria-hidden="true">🌱</span>`, "day study streak")}
+  </div>`;
+}
+
+/* ---------- geometric backdrop ---------- */
+function geo(variant){
+  // quiet composition in the page corner; colours come from the theme
+  return `<svg class="geo geo-${variant}" viewBox="0 0 300 200" aria-hidden="true">
+    <defs><pattern id="dots-${variant}" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="var(--sage)" opacity=".35"/></pattern></defs>
+    <rect x="120" y="14" width="150" height="96" fill="url(#dots-${variant})"/>
+    <circle class="g1" cx="210" cy="84" r="54" fill="var(--mist)"/>
+    <circle class="g2" cx="210" cy="84" r="74" fill="none" stroke="var(--sage)" stroke-opacity=".28" stroke-width="1.2" stroke-dasharray="2 6"/>
+    <path class="g3" d="M126 168 a 34 34 0 0 1 68 0" fill="none" stroke="var(--sky)" stroke-opacity=".55" stroke-width="9" stroke-linecap="round"/>
+    <g class="g4"><rect x="244" y="146" width="20" height="20" rx="3" fill="none" stroke="var(--amber)" stroke-opacity=".6" stroke-width="2" transform="rotate(18 254 156)"/></g>
+    <circle class="g5" cx="160" cy="40" r="6" fill="var(--sage)" opacity=".6"/>
+  </svg>`;
+}
+
+/* ---------- views ---------- */
+function pastPlans(){
+  if (!S.history.length) return "";
+  return `<div class="panel"><h2>Past plans</h2><ul class="past">${S.history.slice().reverse().map(h =>
+    `<li><span>Exam ${nice(h.target)}, started ${nice(h.start)}<br><span class="muted">${h.lessons} lessons done${h.best !== null ? `, best practice score ${h.best}%` : ""}</span></span><span class="pill ${h.status}"><span class="dot"></span>${STATUS[h.status]}</span></li>`).join("")}</ul></div>`;
+}
+function viewSetup(){
+  const suggested = addDays(today(), 14);
+  const last = S.history[S.history.length-1];
+  const kept = LESSONS.filter(l => S.done[l.id]).length;
+  let note = "";
+  if (last && last.ended === today()) note = last.status === "cancelled"
+    ? `<p class="notice">Your exam on ${long(last.target)} is cancelled. ${kept ? `Your ${kept} finished lessons are kept, and a new plan picks up where you left off.` : ""}</p>`
+    : `<p class="notice" style="background:var(--mist)">Plan completed. Well done on finishing it. ${kept ? `Your ${kept} finished lessons are kept.` : ""}</p>`;
+  return `${geo("setup")}<h1>${S.history.length ? "Plan your next exam" : "Prepare for PSM I"}</h1>
+  <p class="lede">A self-paced course built on the 2020 Scrum Guide and the three PSM I focus areas. Set your exam date and the course spreads the reading across the days you have left.</p>
+  ${note}
+  <div class="panel" style="margin-top:20px"><h2>When is your exam?</h2><p class="muted">The day before the exam is kept free for review and a full mock exam.</p>
+  <div class="row" style="margin-top:14px"><label class="field">Exam date<input type="date" id="setTarget" value="${suggested}" min="${addDays(today(),1)}"></label><button class="btn primary" id="startBtn">Start my plan</button></div></div>
+  ${S.history.length ? "" : `<div class="panel"><h2>What’s inside</h2><p class="muted" style="margin-top:6px">${LESSONS.length} lessons, about ${Math.round(TOTAL_MIN/60*10)/10} hours of reading, with quick checks after each lesson and a ${ALL_QS.length}-question practice bank that runs at real exam pace.</p></div>`}
+  ${pastPlans()}`;
+}
+
+function viewPlan(){
+  if (!S.target) return viewSetup();
+  const p = plan();
+  const doneCount = LESSONS.filter(l => S.done[l.id]).length;
+  const best = S.mocks.length ? Math.max(...S.mocks.map(m => Math.round(m.correct / m.total * 100))) : null;
+  const st = streak();
+  const paused = S.status === "paused";
+  let todayBlock;
+  if (paused){
+    const since = S.pauses[S.pauses.length-1].from;
+    todayBlock = `<div class="paused-card"><span class="glyph" aria-hidden="true">🌙</span><div><h2>Plan paused</h2><p class="muted" style="margin:4px 0 0">Paused since ${long(since)}. Daily targets are on hold. When you resume, the remaining reading is spread over the days left before your exam.</p></div></div>
+      <div class="choices"><button class="btn primary" data-act="resume">Resume plan</button></div>`;
+  }
+  else if (p.examIn < 0) todayBlock = `<div class="today-head"><h2>Your exam date has passed</h2></div><p class="muted">How did it go? Mark the plan completed, or pick a new exam date below to keep studying.</p><div class="choices"><button class="btn primary" data-act="complete">Mark plan completed</button></div>`;
+  else if (p.remainingMin === 0) todayBlock = `<div class="today-head"><h2>All lessons done 🌿</h2></div><p class="muted">Keep sharp with practice exams until you score 95% or more consistently, then take the Scrum Open assessment.</p><div class="choices"><a class="btn primary" href="#practice">Take a practice exam</a></div>`;
+  else {
+    const doneMinToday = p.list.filter(l => S.done[l.id]).reduce((s,l) => s + l.min, 0);
+    const met = doneMinToday >= p.daily;
+    todayBlock = `<div class="today-head"><h2>${met ? "Today’s target met" : "Today’s reading"}</h2><div class="target"><span data-count="${p.daily}">${p.daily}</span><small>min</small></div></div>
+    <p class="muted">${met ? "Nice work. Reading ahead lowers tomorrow’s target." : `${p.remainingMin} minutes left across ${p.daysLeft} study ${p.daysLeft === 1 ? "day" : "days"}, finishing ${nice(p.studyEnd)}.`}</p>
+    <div class="bar" style="margin-top:12px"><span style="width:${Math.min(100, Math.round(doneMinToday/p.daily*100))}%"></span></div>
+    <ul class="today-list">${p.list.map(l => `<li class="${S.done[l.id] ? "done" : ""}"><a href="#${l.id}"><span class="tick"></span><span>${esc(l.title)}</span><span class="mins">${l.min} min</span></a></li>`).join("")}</ul>`;
+  }
+  return `${geo("plan")}<div class="title-row"><h1>Study plan</h1><span class="pill ${S.status}"><span class="dot"></span>${STATUS[S.status]}</span></div>
+  <p class="lede">Exam on ${long(S.target)}. The plan recalculates every day from what you’ve finished.</p>
+  <div class="status-actions">
+    ${paused ? `<button class="btn" data-act="resume">Resume plan</button>` : `<button class="btn" data-act="pause">Pause plan</button>`}
+    <button class="btn" data-act="complete">Mark completed</button>
+    <button class="btn danger" data-act="cancel">Cancel exam</button>
+  </div>
+  <div class="panel today">${todayBlock}</div>
+  ${statsBlock(p, doneCount, best, st)}
+  <div class="panel"><h2>Your study burndown</h2><p class="muted">The same chart Scrum teams use for a Sprint: the dashed line is the ideal pace, the solid line is your progress.${S.pauses.length ? " Shaded days were paused." : ""}</p>
+    <div class="chart-wrap">${burndown()}</div>
+    <div class="legend"><span><i style="background:var(--sage)"></i>Actual</span><span><i style="background:var(--faint)"></i>Ideal</span>${S.pauses.length ? `<span><i style="background:var(--amber-mist);height:10px"></i>Paused</span>` : ""}</div></div>
+  <div class="panel"><h2>Dates</h2>
+    <div class="row" style="margin-top:12px"><label class="field">Study started<input type="date" id="setStart" value="${S.start}" max="${S.target}"></label><label class="field">Exam date<input type="date" id="setTarget2" value="${S.target}" min="${S.start}"></label><button class="btn" id="saveDates">Save dates</button></div></div>
+  ${pastPlans()}
+  <div class="panel"><h2>Your progress data</h2><p class="muted">Progress is saved in this browser only. Export it to back it up or move it to another device.</p>
+    <div class="choices"><button class="btn" id="exportBtn">Export progress</button><label class="btn" for="importFile">Import progress</label><input type="file" id="importFile" accept="application/json" hidden><button class="btn quiet" id="resetBtn">Reset everything</button></div>
+    ${storageOk ? "" : `<p class="notice">This browser is blocking local storage, so progress won’t be kept after you close the page. Use Export progress before leaving.</p>`}</div>`;
+}
+
+function qBlock(q, key, idx){
+  const multi = q.a.length > 1;
+  return `<div class="q" data-key="${key}" data-i="${idx}"><p class="stem">${esc(q.q)}</p>${multi ? `<p class="hint">Choose ${q.a.length}.</p>` : ""}
+  ${q.o.map((o,i) => `<label class="opt"><input type="${multi ? "checkbox" : "radio"}" name="${key}-${idx}" value="${i}"><span>${esc(o)}</span></label>`).join("")}
+  <div class="explain-slot"></div></div>`;
+}
+function grade(q, picked){ return [...q.a].sort().join() === [...picked].sort().join(); }
+
+function viewLesson(id){
+  const l = LESSONS.find(x => x.id === id);
+  const i = LESSONS.indexOf(l), prev = LESSONS[i-1], next = LESSONS[i+1];
+  const done = !!S.done[l.id];
+  return `<div class="crumb">${esc(l.module.title)}</div>
+  <h1>${esc(l.title)}</h1>
+  <div class="meta"><span class="chip">${l.min} min</span><span class="chip">${esc(l.module.area)}</span>${done ? `<span class="chip ok">Done ${nice(S.done[l.id])}</span>` : ""}</div>
+  <div class="reading">${l.body}</div>
+  ${l.keys.length ? `<div class="aside"><h3>Remember</h3><ul>${l.keys.map(k => `<li>${esc(k)}</li>`).join("")}</ul></div>` : ""}
+  ${l.traps.length ? `<div class="aside trap"><h3>Exam traps</h3><ul>${l.traps.map(k => `<li>${esc(k)}</li>`).join("")}</ul></div>` : ""}
+  ${l.qs.length ? `<section class="qs"><h2>Quick check</h2>${S.quiz[l.id] !== undefined ? `<p class="muted">Last score: ${S.quiz[l.id]} of ${l.qs.length}</p>` : `<p class="muted">Answer, then check. Explanations appear after checking.</p>`}
+    ${l.qs.map((q,n) => qBlock(q, l.id, n)).join("")}<button class="btn" id="checkBtn">Check answers</button></section>` : ""}
+  <div class="lesson-foot">
+    <div>${prev ? `<a class="btn quiet" href="#${prev.id}">Previous</a>` : ""}</div>
+    <button class="btn ${done ? "" : "primary"}" id="doneBtn">${done ? "Mark as not done" : "Mark as done"}</button>
+    <div>${next ? `<a class="btn quiet" href="#${next.id}">Next</a>` : `<a class="btn quiet" href="#practice">Practice exam</a>`}</div>
+  </div>`;
+}
+
+/* ---------- practice exam ---------- */
+let EX = null;
+function shuffle(a){ a = a.slice(); for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function viewPractice(){
+  if (EX && !EX.finished) return viewExam();
+  if (EX && EX.finished) return viewResult();
+  const hist = S.mocks.slice(-8).reverse();
+  return `${geo("practice")}<h1>Practice exam</h1>
+  <p class="lede">Questions are drawn at random from all lessons plus a mixed review set, timed at the real exam pace of 45 seconds per question. 85% is the pass mark.</p>
+  <div class="panel"><h2>Choose a length</h2><div class="choices">
+    <button class="btn" data-n="20">20 questions, 15 min</button>
+    <button class="btn" data-n="40">40 questions, 30 min</button>
+    <button class="btn primary" data-n="${ALL_QS.length}">Full bank, ${ALL_QS.length} questions, ${Math.round(ALL_QS.length*45/60)} min</button></div>
+    <p class="muted" style="margin-top:14px">These are original practice questions, not real exam questions. Once you score 95% or more here, move on to Scrum.org’s <a href="https://www.scrum.org/open-assessments/scrum-open" target="_blank" rel="noopener">Scrum Open assessment</a>.</p></div>
+  <div class="panel"><h2>Recent attempts</h2>${hist.length ? `<ul class="history">${hist.map(m => { const pc = Math.round(m.correct/m.total*100); return `<li><span>${nice(m.date)}, ${m.total} questions</span><span class="${pc >= 85 ? "pass" : "fail"}">${pc}%</span></li>`; }).join("")}</ul>` : `<p class="muted">No attempts yet. Start with 20 questions once you’ve finished a few lessons.</p>`}</div>`;
+}
+function startExam(n){
+  const qs = shuffle(ALL_QS).slice(0, n);
+  EX = { qs, ans: qs.map(() => []), flag: qs.map(() => false), cur: 0, ends: Date.now() + n*45*1000, finished: false };
+  fresh = true; tick(); render();
+}
+function viewExam(){
+  const q = EX.qs[EX.cur], multi = q.a.length > 1;
+  return `<div class="exam-bar"><span class="muted">Question ${EX.cur+1} of ${EX.qs.length}</span><span class="clock" id="clock"></span></div>
+  <div class="bar" style="margin-bottom:16px"><span style="width:${Math.round(EX.ans.filter(a => a.length).length/EX.qs.length*100)}%"></span></div>
+  <div class="q"><p class="stem">${esc(q.q)}</p>${multi ? `<p class="hint">Choose ${q.a.length}.</p>` : ""}
+  ${q.o.map((o,i) => `<label class="opt"><input type="${multi ? "checkbox" : "radio"}" name="ex" value="${i}" ${EX.ans[EX.cur].includes(i) ? "checked" : ""}><span>${esc(o)}</span></label>`).join("")}</div>
+  <div class="choices"><button class="btn quiet" id="exPrev" ${EX.cur === 0 ? "disabled" : ""}>Previous</button>
+  <button class="btn" id="exFlag">${EX.flag[EX.cur] ? "Remove bookmark" : "Bookmark"}</button>
+  ${EX.cur < EX.qs.length-1 ? `<button class="btn primary" id="exNext">Next question</button>` : `<button class="btn primary" id="exSubmit">Submit exam</button>`}</div>
+  <div class="grid-nav">${EX.qs.map((_,i) => `<button data-go="${i}" class="${EX.ans[i].length ? "answered" : ""} ${EX.flag[i] ? "flag" : ""} ${i === EX.cur ? "cur" : ""}" aria-label="Go to question ${i+1}">${i+1}</button>`).join("")}</div>
+  <button class="btn quiet" id="exSubmit2">Submit now</button>`;
+}
+function finishExam(){
+  EX.finished = true; clearInterval(tick._i);
+  EX.correct = EX.qs.filter((q,i) => grade(q, EX.ans[i])).length;
+  S.mocks.push({ date: today(), total: EX.qs.length, correct: EX.correct }); save();
+  fresh = true; render();
+  if (EX.correct / EX.qs.length >= .85) confetti(EX.correct / EX.qs.length >= .95 ? 110 : 60);
+}
+function viewResult(){
+  const pc = Math.round(EX.correct / EX.qs.length * 100);
+  const wrong = EX.qs.map((q,i) => ({q, i})).filter(o => !grade(o.q, EX.ans[o.i]));
+  return `<h1>Your result</h1>
+  <div class="panel"><div class="score ${pc >= 85 ? "pass" : "fail"}"><span data-count="${pc}" data-suffix="%">${pc}%</span></div><p class="muted" style="margin-top:8px">${EX.correct} of ${EX.qs.length} correct. ${pc >= 95 ? "Exam-ready pace. Confirm it with the Scrum Open assessment." : pc >= 85 ? "A pass, but aim for 95% or more before the real exam." : "Below the 85% pass mark. Review the explanations below, then reread the related lessons."}</p>
+  <div class="choices"><button class="btn primary" id="again">Take another</button></div></div>
+  ${wrong.length ? `<h2 style="margin:28px 0 12px">Review what you missed</h2>` + wrong.map(({q,i}) => `<div class="q"><p class="stem">${esc(q.q)}</p>${q.o.map((o,k) => `<div class="opt ${q.a.includes(k) ? "right" : EX.ans[i].includes(k) ? "wrong" : ""}"><span>${esc(o)}</span></div>`).join("")}<div class="explain">${esc(q.x)} <span class="muted">From: ${esc(q.from)}</span></div></div>`).join("") : ""}`;
+}
+function tick(){
+  clearInterval(tick._i);
+  const upd = () => {
+    if (!EX || EX.finished) return clearInterval(tick._i);
+    const el = $("#clock"), s = Math.max(0, Math.round((EX.ends - Date.now())/1000));
+    if (el){ el.textContent = Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); el.classList.toggle("low", s < 120); }
+    if (s <= 0) finishExam();
+  };
+  upd(); tick._i = setInterval(upd, 1000);
+}
+function readPicked(){ return [...document.querySelectorAll('input[name="ex"]:checked')].map(i => +i.value); }
+
+function viewSheet(){
+  const rows = r => r.map(([a,b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("");
+  const table = (title, r) => `<div class="panel"><h2>${title}</h2><div class="table-wrap" style="margin-top:10px"><table><tbody>${rows(r)}</tbody></table></div></div>`;
+  return `${geo("sheet")}<h1>Cheat sheet</h1><p class="lede">The facts most often tested, on one page. Reread it the night before the exam.</p>` +
+  table("Timeboxes (one-month Sprint)", [["Sprint","1 month or less, fixed length"],["Sprint Planning","8 hours max"],["Daily Scrum","15 minutes, always"],["Sprint Review","4 hours max"],["Sprint Retrospective","3 hours max"]]) +
+  table("Artifacts and commitments", [["Product Backlog","Product Goal"],["Sprint Backlog","Sprint Goal"],["Increment","Definition of Done"]]) +
+  table("Who decides", [["Product Backlog order","Product Owner"],["Cancelling a Sprint","Product Owner, only if the Sprint Goal is obsolete"],["Sprint Goal","Whole Scrum Team"],["How much work to select","Developers, with the Product Owner"],["How the work gets done","Developers"],["Sizing backlog items","Developers"],["Sprint Backlog","Developers"],["Definition of Done","Organisation standard, or the Scrum Team"],["Establishing Scrum and team effectiveness","Scrum Master"]]) +
+  table("Numbers", [["Pillars of empiricism","3: transparency, inspection, adaptation"],["Scrum Values","5: commitment, focus, openness, respect, courage"],["Events","5: the Sprint plus four inside it"],["Team size","Typically 10 or fewer"],["Exam","80 questions, 60 minutes, 85% (68) to pass"]]);
+}
+
+/* ---------- router ---------- */
+let fresh = true;
+function route(){ const h = location.hash.slice(1); if (h === "practice" || h === "sheet") return h; if (LESSONS.some(l => l.id === h)) return h; return "plan"; }
+function render(){
+  const r = route();
+  renderSide(r);
+  let html;
+  if (r === "plan") html = viewPlan(); else if (r === "practice") html = viewPractice(); else if (r === "sheet") html = viewSheet(); else html = viewLesson(r);
+  const v = $("#view");
+  v.innerHTML = html + `<p class="foot">Unofficial study material. Not affiliated with or endorsed by Scrum.org. Professional Scrum Master and PSM are trademarks of Scrum.org. Lesson content is an original summary of the Scrum Guide by Ken Schwaber and Jeff Sutherland, which is licensed under CC BY-SA 4.0; always treat the <a href="https://scrumguides.org/scrum-guide.html" target="_blank" rel="noopener">official Scrum Guide</a> as the source of truth.</p>`;
+  v.classList.toggle("view-enter", fresh && !calm());
+  bind(r);
+  countUp();
+  if (r === "practice" && EX && !EX.finished) tick();
+  $(".side").classList.remove("open"); $("#outlineToggle").textContent = "Show lessons";
+  readProgress();
+  fresh = false; animateChart = false; popId = null;
+}
+function readProgress(){
+  const bar = $("#readProgress");
+  if (!LESSONS.some(l => l.id === route())) { bar.style.width = "0"; return; }
+  const h = document.documentElement.scrollHeight - innerHeight;
+  bar.style.width = (h > 0 ? Math.min(100, scrollY / h * 100) : 0) + "%";
+}
+function setStatus(act){
+  if (act === "pause"){ S.status = "paused"; S.pauses.push({ from: today(), to: null }); save(); toast("Plan paused"); }
+  if (act === "resume"){ const p = S.pauses[S.pauses.length-1]; if (p && !p.to) p.to = today(); S.status = "active"; save(); toast("Welcome back. Plan resumed"); }
+  if (act === "complete"){ if (!confirm("Mark this plan as completed? It moves to your past plans, and your lesson progress is kept.")) return; archive("completed"); confetti(120); }
+  if (act === "cancel"){ if (!confirm("Cancel your exam on " + long(S.target) + "? The plan moves to your past plans, and your lesson progress is kept.")) return; archive("cancelled"); toast("Exam cancelled"); }
+  fresh = true; animateChart = true; render();
+}
+function bind(r){
+  const on = (sel, ev, fn) => { const el = $(sel); if (el) el.addEventListener(ev, fn); };
+  on("#startBtn", "click", () => { const v = $("#setTarget").value; if (!v || diff(today(), v) < 1){ toast("Pick an exam date after today"); return; } S.start = today(); S.target = v; S.status = "active"; S.pauses = []; save(); fresh = true; animateChart = true; render(); confetti(50); });
+  on("#saveDates", "click", () => { const s = $("#setStart").value, t = $("#setTarget2").value; if (!s || !t || diff(s,t) < 1){ toast("The exam date must be after the start date"); return; } S.start = s; S.target = t; save(); toast("Dates saved"); animateChart = true; render(); });
+  on("#exportBtn", "click", () => { const blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "psm1-progress-" + today() + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); });
+  on("#importFile", "change", e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { try { const d = JSON.parse(rd.result); if (typeof d !== "object" || !d.done) throw 0; S = Object.assign(blank(), d); if (S.target && !S.status) S.status = "active"; save(); applyTheme(S.theme); toast("Progress imported"); fresh = true; animateChart = true; render(); } catch(err){ toast("That file isn’t a progress export"); } }; rd.readAsText(f); });
+  on("#resetBtn", "click", () => { if (confirm("Delete all progress, dates, plans and scores in this browser?")){ const theme = S.theme; S = blank(); S.theme = theme; save(); EX = null; fresh = true; render(); } });
+  document.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => setStatus(b.dataset.act)));
+  on("#doneBtn", "click", () => {
+    if (S.done[r]) { delete S.done[r]; save(); toast("Marked as not done"); render(); return; }
+    S.done[r] = today(); save(); popId = r;
+    const l = LESSONS.find(x => x.id === r);
+    const modDone = l.module.lessons.every(x => S.done[x.id]);
+    const allDone = LESSONS.every(x => S.done[x.id]);
+    render();
+    if (allDone){ toast("Every lesson done. Time for full mock exams"); confetti(140); }
+    else if (modDone){ toast("Module complete: " + l.module.title); confetti(70); }
+    else toast("Marked as done");
+  });
+  on("#checkBtn", "click", () => {
+    const l = LESSONS.find(x => x.id === r); let score = 0;
+    document.querySelectorAll(".q").forEach(box => {
+      const q = l.qs[+box.dataset.i];
+      const picked = [...box.querySelectorAll("input:checked")].map(i => +i.value);
+      const ok = grade(q, picked); if (ok) score++;
+      box.querySelectorAll(".opt").forEach((o,k) => { o.classList.remove("right","wrong"); if (q.a.includes(k)) o.classList.add("right"); else if (picked.includes(k)) o.classList.add("wrong"); });
+      box.querySelector(".explain-slot").innerHTML = `<div class="explain"><b class="${ok ? "good" : "bad"}">${ok ? "Correct." : "Not quite."}</b> ${esc(q.x)}</div>`;
+      box.classList.remove("shake"); if (!ok) { void box.offsetWidth; box.classList.add("shake"); }
+    });
+    S.quiz[r] = score; save();
+    if (score === l.qs.length) { toast("All correct"); confetti(40); }
+  });
+  document.querySelectorAll("[data-n]").forEach(b => b.addEventListener("click", () => startExam(+b.dataset.n)));
+  if (r === "practice" && EX && !EX.finished){
+    const keep = () => { EX.ans[EX.cur] = readPicked(); };
+    document.querySelectorAll('input[name="ex"]').forEach(i => i.addEventListener("change", () => { keep(); document.querySelector('.grid-nav [data-go="' + EX.cur + '"]').classList.toggle("answered", EX.ans[EX.cur].length > 0); }));
+    on("#exPrev", "click", () => { keep(); EX.cur--; render(); });
+    on("#exNext", "click", () => { keep(); EX.cur++; render(); });
+    on("#exFlag", "click", () => { keep(); EX.flag[EX.cur] = !EX.flag[EX.cur]; render(); });
+    const submit = () => { keep(); const left = EX.ans.filter(a => !a.length).length; if (left && !confirm(left + " unanswered. Submit anyway?")) return; finishExam(); };
+    on("#exSubmit", "click", submit); on("#exSubmit2", "click", submit);
+    document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { keep(); EX.cur = +b.dataset.go; render(); }));
+  }
+  on("#again", "click", () => { EX = null; fresh = true; render(); });
+}
+document.getElementById("appearance").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.theme = S.theme || {};
+  if (b.dataset.mode) S.theme.mode = b.dataset.mode;
+  if (b.dataset.accent) S.theme.accent = b.dataset.accent;
+  save(); applyTheme(S.theme); renderSide(route());
+});
+if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if ((S.theme||{}).mode === "system" || !(S.theme||{}).mode) { applyTheme(S.theme); renderSide(route()); } });
+$("#outlineToggle").addEventListener("click", () => { const open = $(".side").classList.toggle("open"); $("#outlineToggle").textContent = open ? "Hide lessons" : "Show lessons"; });
+window.addEventListener("hashchange", () => { fresh = true; animateChart = route() === "plan"; render(); window.scrollTo(0,0); });
+window.addEventListener("scroll", readProgress, { passive: true });
+render();
+})();
+</script>
+</body>
+</html>
