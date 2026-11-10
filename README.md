@@ -8,6 +8,7 @@ A free, self-paced study course for the Professional Scrum Master I (PSM I) exam
 - A study burndown chart: ideal pace compared with your actual progress
 - A 76-question practice bank, timed at the real exam pace of 45 seconds per question
 - A one-page cheat sheet
+- Lesson notes: select any text in a lesson and choose Save to notes. Saved passages appear in each lesson's My notes section and on a My notes page that groups them by lesson, with copy and download as Markdown. Notes are included in progress exports
 - Plan status: in progress, paused (shown as shaded days on the burndown), completed or cancelled, with a history of past plans
 - Appearance settings: system, light or dark mode, and four soft accent colours (sage, sky, sand, lavender)
 - Small touches: a study streak, a reading progress bar, an animated burndown and confetti for milestones. Animations are turned off when the system's reduced-motion setting is on

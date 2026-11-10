@@ -277,6 +277,42 @@ th{font-weight:600;color:var(--muted)}
 .brand-mark{padding:0;width:32px;min-width:32px;height:32px}
 @media (max-width: 860px){ .main > .geo{width:180px;opacity:.7} }
 @media (prefers-reduced-motion: reduce){ .geo *, .ring.grow, .segs.grow i, .spark.grow, .week.grow span.on b{animation:none!important;stroke-dashoffset:var(--o)} .spark.grow{stroke-dashoffset:0!important} }
+
+/* ---------- lesson notes ---------- */
+.reading ::selection, .aside ::selection{background:var(--mist);color:var(--ink)}
+.save-sel{position:fixed;z-index:25;display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:99px;border:0;background:var(--ink);color:var(--paper);font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.14);opacity:0;pointer-events:none;transform:translateY(4px) scale(.96);transition:opacity .15s ease,transform .15s ease}
+.save-sel.show{opacity:1;pointer-events:auto;transform:none}
+.save-sel::after{content:"";position:absolute;left:50%;bottom:-5px;width:10px;height:10px;background:var(--ink);transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.save-sel.below::after{bottom:auto;top:-5px}
+.save-sel svg{position:relative;z-index:1}
+.notes{margin-top:34px;max-width:68ch}
+.notes-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.count{font-size:.78rem;font-weight:600;min-width:22px;height:22px;padding:0 7px;border-radius:99px;display:inline-grid;place-items:center;background:var(--mist);color:var(--sage-deep)}
+.note-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 16px 8px 18px;position:relative;overflow:hidden;transition:opacity .2s ease,transform .2s ease}
+.note::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--sage),var(--sky))}
+.note blockquote{margin:0;font-family:var(--read);font-size:1rem;line-height:1.65;background:linear-gradient(transparent 62%,var(--mist) 62%);display:inline;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.note-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:.8rem;color:var(--faint)}
+.note-meta .btn{font-size:.82rem;padding:4px 6px}
+.note-meta .btn:hover{color:var(--rose)}
+.note.fresh{animation:noteIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes noteIn{from{opacity:0;transform:translateY(-6px) scale(.98)}}
+.note.leaving{opacity:0;transform:translateX(12px)}
+.notes-empty{margin:0;padding:16px 18px;border:1.5px dashed var(--line);border-radius:var(--r-m);color:var(--muted);font-size:.93rem}
+.hl-demo{background:linear-gradient(transparent 55%,var(--mist) 55%);color:var(--ink);font-weight:500}
+@media (prefers-reduced-motion: reduce){ .note.fresh{animation:none} .save-sel{transition:none} }
+
+/* ---------- notes overview ---------- */
+.nav-link{justify-content:flex-start}
+.nav-count{margin-left:auto}
+.note-dot{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 5px;margin-left:6px;border-radius:99px;background:var(--mist);color:var(--sage-deep);font-size:.68rem;font-weight:700;vertical-align:1px}
+.note-group{margin-bottom:30px;max-width:68ch}
+.mod-label{font-size:.8rem;font-weight:600;color:var(--faint);margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.mod-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.lesson-notes{margin-bottom:22px}
+.lesson-notes-title{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:600;margin-bottom:10px}
+.lesson-notes-title:hover{color:var(--sage-deep)}
+.lesson-notes-title .num{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-size:.78rem;color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
@@ -292,6 +328,7 @@ th{font-weight:600;color:var(--muted)}
   <main class="main" id="view"></main>
 </div>
 <div class="read-progress" id="readProgress" aria-hidden="true"></div>
+<button class="save-sel" id="saveSel" type="button"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Save to notes</button>
 <canvas id="confetti" aria-hidden="true"></canvas>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
@@ -712,7 +749,7 @@ const long = s => parse(s).toLocaleDateString(undefined, {weekday:"long", day:"n
 
 /* ---------- storage ---------- */
 let storageOk = true;
-function blank(){ return { version:2, start:null, target:null, status:null, pauses:[], history:[], done:{}, quiz:{}, mocks:[], theme:{mode:"system", accent:"sage"} }; }
+function blank(){ return { version:2, start:null, target:null, status:null, pauses:[], history:[], done:{}, quiz:{}, notes:{}, mocks:[], theme:{mode:"system", accent:"sage"} }; }
 function load(){
   try {
     const raw = localStorage.getItem(KEY); if (!raw) return blank();
@@ -826,10 +863,10 @@ function renderSide(route){
   const pct = Math.round(doneCount / LESSONS.length * 100);
   $("#overall").innerHTML = `<div class="overall-row"><span>${doneCount} of ${LESSONS.length} lessons</span><span>${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div>`;
   const cur = r => route === r ? ' aria-current="page"' : "";
-  $("#navtop").innerHTML = `<a class="nav-link" href="#plan"${cur("plan")}>Study plan</a><a class="nav-link" href="#practice"${cur("practice")}>Practice exam</a><a class="nav-link" href="#sheet"${cur("sheet")}>Cheat sheet</a>`;
+  $("#navtop").innerHTML = `<a class="nav-link" href="#plan"${cur("plan")}>Study plan</a><a class="nav-link" href="#practice"${cur("practice")}>Practice exam</a><a class="nav-link" href="#sheet"${cur("sheet")}>Cheat sheet</a><a class="nav-link" href="#mynotes"${cur("mynotes")}>My notes${noteTotal() ? `<span class="count nav-count">${noteTotal()}</span>` : ""}</a>`;
   $("#outline").innerHTML = COURSE.map(m => `<div class="mod">${esc(m.title)}</div>` + m.lessons.map(l => {
     const n = LESSONS.findIndex(x => x.id === l.id) + 1;
-    return `<a class="lesson-link${S.done[l.id] ? " done" : ""}" href="#${l.id}"${route === l.id ? ' aria-current="page"' : ""}><span class="tick${popId === l.id ? " pop" : ""}"></span><span>${n}. ${esc(l.title)}</span></a>`;
+    return `<a class="lesson-link${S.done[l.id] ? " done" : ""}" href="#${l.id}"${route === l.id ? ' aria-current="page"' : ""}><span class="tick${popId === l.id ? " pop" : ""}"></span><span>${n}. ${esc(l.title)}${noteCount(l.id) ? `<span class="note-dot" title="${noteCount(l.id)} saved ${noteCount(l.id) === 1 ? "note" : "notes"}" aria-label="${noteCount(l.id)} notes">${noteCount(l.id)}</span>` : ""}</span></a>`;
   }).join("")).join("");
   const th = S.theme || {};
   $("#appearance").innerHTML = `<h3>Appearance</h3>
@@ -971,6 +1008,7 @@ function viewLesson(id){
   <div class="reading">${l.body}</div>
   ${l.keys.length ? `<div class="aside"><h3>Remember</h3><ul>${l.keys.map(k => `<li>${esc(k)}</li>`).join("")}</ul></div>` : ""}
   ${l.traps.length ? `<div class="aside trap"><h3>Exam traps</h3><ul>${l.traps.map(k => `<li>${esc(k)}</li>`).join("")}</ul></div>` : ""}
+  ${notesSection(l.id)}
   ${l.qs.length ? `<section class="qs"><h2>Quick check</h2>${S.quiz[l.id] !== undefined ? `<p class="muted">Last score: ${S.quiz[l.id]} of ${l.qs.length}</p>` : `<p class="muted">Answer, then check. Explanations appear after checking.</p>`}
     ${l.qs.map((q,n) => qBlock(q, l.id, n)).join("")}<button class="btn" id="checkBtn">Check answers</button></section>` : ""}
   <div class="lesson-foot">
@@ -978,6 +1016,87 @@ function viewLesson(id){
     <button class="btn ${done ? "" : "primary"}" id="doneBtn">${done ? "Mark as not done" : "Mark as done"}</button>
     <div>${next ? `<a class="btn quiet" href="#${next.id}">Next</a>` : `<a class="btn quiet" href="#practice">Practice exam</a>`}</div>
   </div>`;
+}
+
+
+/* ---------- lesson notes ---------- */
+function notesSection(id){
+  const list = (S.notes && S.notes[id]) || [];
+  return `<section class="notes" id="notes" aria-labelledby="notesTitle">
+    <div class="notes-head"><h2 id="notesTitle">My notes</h2>${list.length ? `<span class="count">${list.length}</span>` : ""}</div>
+    ${list.length ? `<ul class="note-list">${list.map(n => `<li class="note" data-note="${n.id}"><blockquote>${esc(n.text)}</blockquote>
+      <div class="note-meta"><span>Saved ${nice(n.at)}</span><button class="btn quiet" data-del="${n.id}" data-lesson="${id}" aria-label="Remove this note">Remove</button></div></li>`).join("")}</ul>`
+    : `<p class="notes-empty"><span class="hl-demo">Select any text</span> in this lesson, then choose <b>Save to notes</b>. Your saved passages collect here.</p>`}
+  </section>`;
+}
+function saveNote(id, text){
+  text = text.replace(/\s+/g, " ").trim();
+  if (!text) return;
+  if (text.length > 1200) text = text.slice(0, 1200) + "…";
+  S.notes = S.notes || {};
+  const list = S.notes[id] = S.notes[id] || [];
+  if (list.some(n => n.text === text)) { toast("Already in your notes"); return; }
+  list.push({ id: Date.now().toString(36), text, at: today() });
+  save();
+  const y = scrollY; newNote = list[list.length-1].id; render(); window.scrollTo(0, y);
+  toast("Saved to My notes");
+}
+let newNote = null;
+function selectionInLesson(){
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+  const range = sel.getRangeAt(0);
+  const host = n => (n.nodeType === 1 ? n : n.parentElement);
+  const zone = el => el && el.closest(".reading, .aside");
+  if (!zone(host(range.startContainer)) || !zone(host(range.endContainer))) return null;
+  const text = sel.toString().trim();
+  return text.length >= 3 ? { text, rect: range.getBoundingClientRect() } : null;
+}
+function placeSaveBtn(){
+  const btn = $("#saveSel");
+  const r = route();
+  const s = LESSONS.some(l => l.id === r) ? selectionInLesson() : null;
+  if (!s) { btn.classList.remove("show"); return; }
+  const w = btn.offsetWidth || 130;
+  let x = s.rect.left + s.rect.width/2 - w/2;
+  x = Math.max(8, Math.min(x, innerWidth - w - 8));
+  let y = s.rect.top - 46;
+  btn.classList.toggle("below", y < 8);
+  if (y < 8) y = s.rect.bottom + 10;
+  btn.style.left = x + "px"; btn.style.top = y + "px";
+  btn.classList.add("show");
+}
+
+
+const noteCount = id => ((S.notes || {})[id] || []).length;
+const noteTotal = () => LESSONS.reduce((s,l) => s + noteCount(l.id), 0);
+function notesMarkdown(){
+  let md = "# My PSM I notes\n";
+  COURSE.forEach(m => {
+    const ls = m.lessons.filter(l => noteCount(l.id));
+    if (!ls.length) return;
+    md += `\n## ${m.title}\n`;
+    ls.forEach(l => { md += `\n### ${l.title}\n\n` + S.notes[l.id].map(n => `> ${n.text}\n`).join("\n"); });
+  });
+  return md;
+}
+function viewNotes(){
+  const total = noteTotal();
+  const groups = COURSE.map(m => {
+    const ls = m.lessons.filter(l => noteCount(l.id));
+    if (!ls.length) return "";
+    return `<section class="note-group"><div class="mod-label">${esc(m.title)}</div>` + ls.map(l => {
+      const n = LESSONS.findIndex(x => x.id === l.id) + 1;
+      return `<div class="lesson-notes"><a class="lesson-notes-title" href="#${l.id}"><span class="num">${n}</span><span>${esc(l.title)}</span><span class="count">${noteCount(l.id)}</span></a>
+        <ul class="note-list">${S.notes[l.id].map(x => `<li class="note" data-note="${x.id}"><blockquote>${esc(x.text)}</blockquote>
+        <div class="note-meta"><span>Saved ${nice(x.at)}</span><button class="btn quiet" data-del="${x.id}" data-lesson="${l.id}" aria-label="Remove this note">Remove</button></div></li>`).join("")}</ul></div>`;
+    }).join("") + `</section>`;
+  }).join("");
+  const lessonsWith = LESSONS.filter(l => noteCount(l.id)).length;
+  return `${geo("notes")}<h1>My notes</h1>
+  <p class="lede">${total ? `${total} saved ${total === 1 ? "passage" : "passages"} from ${lessonsWith} ${lessonsWith === 1 ? "lesson" : "lessons"}, in course order. Reread them before the exam.` : "Passages you save while reading are collected here, grouped by lesson."}</p>
+  ${total ? `<div class="choices" style="margin:-10px 0 26px"><button class="btn" id="copyNotes">Copy as Markdown</button><button class="btn" id="dlNotes">Download .md</button></div>${groups}`
+  : `<p class="notes-empty"><span class="hl-demo">Select any text</span> in a lesson, then choose <b>Save to notes</b>. Your notes will appear here, grouped by lesson.</p>`}`;
 }
 
 /* ---------- practice exam ---------- */
@@ -1052,12 +1171,12 @@ function viewSheet(){
 
 /* ---------- router ---------- */
 let fresh = true;
-function route(){ const h = location.hash.slice(1); if (h === "practice" || h === "sheet") return h; if (LESSONS.some(l => l.id === h)) return h; return "plan"; }
+function route(){ const h = location.hash.slice(1); if (h === "practice" || h === "sheet" || h === "mynotes") return h; if (LESSONS.some(l => l.id === h)) return h; return "plan"; }
 function render(){
   const r = route();
   renderSide(r);
   let html;
-  if (r === "plan") html = viewPlan(); else if (r === "practice") html = viewPractice(); else if (r === "sheet") html = viewSheet(); else html = viewLesson(r);
+  if (r === "plan") html = viewPlan(); else if (r === "practice") html = viewPractice(); else if (r === "sheet") html = viewSheet(); else if (r === "mynotes") html = viewNotes(); else html = viewLesson(r);
   const v = $("#view");
   v.innerHTML = html + `<p class="foot">Unofficial study material. Not affiliated with or endorsed by Scrum.org. Professional Scrum Master and PSM are trademarks of Scrum.org. Lesson content is an original summary of the Scrum Guide by Ken Schwaber and Jeff Sutherland, which is licensed under CC BY-SA 4.0; always treat the <a href="https://scrumguides.org/scrum-guide.html" target="_blank" rel="noopener">official Scrum Guide</a> as the source of truth.</p>`;
   v.classList.toggle("view-enter", fresh && !calm());
@@ -1065,7 +1184,7 @@ function render(){
   countUp();
   if (r === "practice" && EX && !EX.finished) tick();
   $(".side").classList.remove("open"); $("#outlineToggle").textContent = "Show lessons";
-  readProgress();
+  readProgress(); $("#saveSel").classList.remove("show");
   fresh = false; animateChart = false; popId = null;
 }
 function readProgress(){
@@ -1100,6 +1219,13 @@ function bind(r){
     else if (modDone){ toast("Module complete: " + l.module.title); confetti(70); }
     else toast("Marked as done");
   });
+  document.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+    const li = b.closest(".note"); li.classList.add("leaving");
+    setTimeout(() => { const k = b.dataset.lesson; S.notes[k] = (S.notes[k] || []).filter(n => n.id !== b.dataset.del); if (!S.notes[k].length) delete S.notes[k]; save(); const y = scrollY; render(); window.scrollTo(0, y); toast("Note removed"); }, calm() ? 0 : 220);
+  }));
+  if (newNote) { const el = document.querySelector(`[data-note="${newNote}"]`); if (el) el.classList.add("fresh"); newNote = null; }
+  on("#copyNotes", "click", () => { const md = notesMarkdown(); (navigator.clipboard ? navigator.clipboard.writeText(md) : Promise.reject()).then(() => toast("Notes copied as Markdown"), () => toast("Copy isn’t available here. Use Download instead")); });
+  on("#dlNotes", "click", () => { const blob = new Blob([notesMarkdown()], {type:"text/markdown"}); const a2 = document.createElement("a"); a2.href = URL.createObjectURL(blob); a2.download = "psm1-notes-" + today() + ".md"; a2.click(); setTimeout(() => URL.revokeObjectURL(a2.href), 1000); });
   on("#checkBtn", "click", () => {
     const l = LESSONS.find(x => x.id === r); let score = 0;
     document.querySelectorAll(".q").forEach(box => {
@@ -1136,7 +1262,16 @@ document.getElementById("appearance").addEventListener("click", e => {
 if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if ((S.theme||{}).mode === "system" || !(S.theme||{}).mode) { applyTheme(S.theme); renderSide(route()); } });
 $("#outlineToggle").addEventListener("click", () => { const open = $(".side").classList.toggle("open"); $("#outlineToggle").textContent = open ? "Hide lessons" : "Show lessons"; });
 window.addEventListener("hashchange", () => { fresh = true; animateChart = route() === "plan"; render(); window.scrollTo(0,0); });
-window.addEventListener("scroll", readProgress, { passive: true });
+window.addEventListener("scroll", () => { readProgress(); if ($("#saveSel").classList.contains("show")) placeSaveBtn(); }, { passive: true });
+let selT;
+document.addEventListener("selectionchange", () => { clearTimeout(selT); selT = setTimeout(placeSaveBtn, 180); });
+const saveSel = $("#saveSel");
+saveSel.addEventListener("mousedown", e => e.preventDefault()); // keep the selection alive
+saveSel.addEventListener("click", () => {
+  const s = selectionInLesson(); if (!s) return;
+  saveNote(route(), s.text);
+  window.getSelection().removeAllRanges(); saveSel.classList.remove("show");
+});
 render();
 })();
 </script>
